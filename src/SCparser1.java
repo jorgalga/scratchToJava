@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,6 +26,7 @@ public class SCparser1 {
 	}
     
     public static String evalInstruct(String command, int numthread, int numObject) {
+    	String s="";
         //Events
         if(command.equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
@@ -40,11 +40,20 @@ public class SCparser1 {
         }
         
         //Control
-        if(command.equals("")){
+        if(command.equals("doForever")){
+        	s = "\tpublic void run(){\n";
+        	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
+        	s+= "\t\t\tSystem.out.println(\"[Thread"+numthread+"] - Step:\"+i);\n";
+        	s+= "\t\t\ttry {\n";
+        	s+= "\t\t\t\tThread.sleep(1000);\n";
+        	s+= "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	s+= "\t\t}\n";
+        	s+= "\t\tGlobals.cucumberKey = false;\n";
+        	s+= "\t}\n";
         }
         
         
-        return "";
+        return s;
     }
     public static void parseFile() {
         
@@ -133,7 +142,7 @@ public class SCparser1 {
                             fw = new FileWriter(file.getAbsoluteFile(), true);
                             bw = new BufferedWriter(fw);
                             bw.write("\t//"+ins.get(0)+"\n"); 
-                            bw.write(evalInstruct((String) ins.get(0),0,0));
+                            bw.write(evalInstruct((String) ins.get(0),Globals.total_numthreads,Globals.i_object));
                             bw.close(); 
                         }catch (IOException e){}
                     }//End for

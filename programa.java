@@ -10,17 +10,45 @@ class Thread_1 extends Thread {
 	//gotoX:y:
 	//setRotationStyle
 	//doForever
+	public void run(){
+		for(int i=0; i < Globals.steps; i++){
+			System.out.println("[Thread1] - Step:"+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		Globals.cucumberKey = false;
+	}
 }
 class Thread_2 extends Thread {
 	//whenGreenFlag
 	//lookLike:
 	//doForever
+	public void run(){
+		for(int i=0; i < Globals.steps; i++){
+			System.out.println("[Thread2] - Step:"+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		Globals.cucumberKey = false;
+	}
 }
 class Thread_3 extends Thread {
 	//whenGreenFlag
 	//doForever
+	public void run(){
+		for(int i=0; i < Globals.steps; i++){
+			System.out.println("[Thread3] - Step:"+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		Globals.cucumberKey = false;
+	}
 }
 class Globals {
+	public static int steps ;
 	public static boolean cucumberKey = true;
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
