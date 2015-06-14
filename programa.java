@@ -1,16 +1,10 @@
 //Scratch parsed in Java 
-import java.io.*;
-import org.json.*;
+package cucumber.features;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import java.util.Iterator;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 class Thread_1 extends Thread {
 	//whenGreenFlag
 	//gotoX:y:

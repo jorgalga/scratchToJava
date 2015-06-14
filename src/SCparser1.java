@@ -48,28 +48,17 @@ public class SCparser1 {
     public static void parseFile() {
         
         //Aux variables
-    	
-    	
-        
-        
-        
         final String filePath = "project.json";
         FileReader reader = null;
         
         //Writing The header lines
         String imports = "//Scratch parsed in Java \n";
-        imports += "import java.io.*;\n"
-        		+ "import org.json.*;\n"
+        imports += "package cucumber.features;\n"
         		+ "import java.awt.event.KeyAdapter;\n"
         		+ "import java.awt.event.KeyEvent;\n"
+        		+ "import java.util.ArrayList;\n"
         		+ "import javax.swing.JFrame;\n"
-        		+ "import javax.swing.JTextField;\n"
-        		+ "import java.util.Iterator;\n"
-        		+ "import org.json.simple.JSONArray;\n"
-        		+ "import org.json.simple.JSONObject;\n"
-        		+ "import org.json.simple.parser.JSONParser;\n"
-        		+ "import org.json.simple.parser.ParseException;\n\n";
-        
+        		+ "import javax.swing.JTextField;\n";
         File file;
         FileWriter fw; 
         BufferedWriter bw;
@@ -82,27 +71,21 @@ public class SCparser1 {
             bw = new BufferedWriter(fw);
             bw.write(imports);  //Writing the heather
             bw.close();           
-        }catch (IOException e){
-            
-        }
-        
+        }catch (IOException e){}
         try {
             reader = new FileReader(filePath);
             final JSONParser parser = new JSONParser();
             final JSONObject json = (JSONObject) parser.parse(reader);
-
             final String createDate = (String) json.get("objName");
             System.out.println("Object Name: " + createDate);
-
             final JSONArray jsonChildren = (JSONArray) json.get("children");
             final Iterator it = jsonChildren.iterator();
-            
             //Foreach Object in the Json File
             while (it.hasNext()) {
             	Globals.i_object++;
                 System.out.println("[NEW CHILD]");
                 Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
-                
+              
                 JSONObject jsonChild = (JSONObject) it.next();
 
                 String objName = (String) jsonChild.get("objName");
