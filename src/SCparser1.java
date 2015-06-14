@@ -3,12 +3,14 @@ import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +19,6 @@ import java.io.PrintWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-
 public class SCparser1 {
 	
 	public static void main(String[] args) {
@@ -85,12 +86,20 @@ public class SCparser1 {
             	Globals.i_object++;
                 System.out.println("[NEW CHILD]");
                 Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
-              
                 JSONObject jsonChild = (JSONObject) it.next();
-
                 String objName = (String) jsonChild.get("objName");
-                String password = (String) jsonChild.get("rotationStyle");
-                System.out.println(objName + ":" + password);
+                Object cci = jsonChild.get("currentCostumeIndex");
+                Object sx = jsonChild.get("scratchX");
+                Object sy = jsonChild.get("scratchY");
+                Object d = jsonChild.get("direction");
+                String rs = (String) jsonChild.get("rotationStyle");
+                Object isd = jsonChild.get("isDraggable");
+                Object iil = jsonChild.get("indexInLibrary");
+                Object vis = jsonChild.get("visible"); 
+                
+                System.out.println("objName: " + objName);
+                
+                Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.add(new SCObject(\""+objName+"\","+cci+","+sx+","+sy+","+d+",\""+rs+"\","+isd+","+iil+","+vis+"));\n";
                 
                 JSONArray jsonScripts = (JSONArray) jsonChild.get("scripts");
                 
@@ -156,11 +165,15 @@ public class SCparser1 {
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             bw.write("class Globals {\n"); 
+            bw.write("\tpublic static int steps ;\n");
+            bw.write("\tpublic static boolean cucumberKey = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
             bw.write("\tpublic static long total_timeApp = 0;\n");
             bw.write("\tpublic static long timeApp = System.currentTimeMillis();\n");
             bw.write(Globals.SCObjets_snippet);
             bw.write(Globals.SCThreads_snippet);
+            bw.write("\tpublic static App appT = new App();\n");
+            bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
             bw.write("}\n");  
             bw.close(); 
         }catch (IOException e){}
@@ -180,20 +193,21 @@ public class SCparser1 {
         	
         	bw.write("\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n");
         	bw.write(Globals.Listener_snippet);
+        	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
         	bw.write("\t\t}\n");
         	
         	bw.write("\t}\n");
         	bw.write("}\n");
             bw.close(); 
         }catch (IOException e){}
-        //Writing the void main snippet
+        //Writing the App main snippet
         try{
         	file = new File("programa.java");
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             
-            bw.write("public class programa {\n");
-            bw.write("\tpublic static void main(String[] args) {\n");
+            bw.write("class App extends Thread{ {\n");
+            bw.write("\tpublic void run (){\n");
             //Writing Key Listener declaration
             bw.write("\t\t// Key Listener declaration\n");
             bw.write("\t\tJTextField textField = new JTextField();\n");
@@ -202,26 +216,24 @@ public class SCparser1 {
             bw.write("\t\tjframe.add(textField);\n");
             bw.write("\t\tjframe.setSize(400, 400);\n");
             bw.write("\t\tjframe.setVisible(true);\n");
-            //Writing the main loop
-            bw.write("\t\t//Main Loop of the app\n");
-            bw.write("\t\twhile(Globals.loop){\n");
-            bw.write("\t\t\tif(System.currentTimeMillis() - Globals.timeApp >= 1000 ){\n");
-            bw.write("\t\t\t\tSystem.out.println(Globals.total_timeApp);\n");
-            bw.write("\t\t\t\tGlobals.total_timeApp++;\n");
-            bw.write("\t\t\t\tGlobals.timeApp = System.currentTimeMillis();\n");
-            bw.write("\t\t\t}\n");
-            bw.write("\t\t}\n");
-            bw.write("\t}\n");
-            bw.write("}\n");
+            //Filling the ArrayListwith the SCobjects
+            bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
+            bw.write(Globals.SCObjets_AddListSnippet);
+            bw.write("\t\tGlobals.cucumberKey = false;\n");
+            bw.write("\t}\n");//Close run function
+            bw.write("}\n");//Close App class
             
             bw.close(); 
-        }catch (IOException e){}   
+        }catch (IOException e){}
+       
+       
     }
 }
 class Globals{
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
 	public static String SCObjets_snippet ="";
+	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
 	public static String Listener_snippet = "";
 }

@@ -21,6 +21,7 @@ class Thread_3 extends Thread {
 	//doForever
 }
 class Globals {
+	public static boolean cucumberKey = true;
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
 	public static long timeApp = System.currentTimeMillis();
@@ -28,6 +29,8 @@ class Globals {
 	public static Thread_1 scThread_1 = new Thread_1();
 	public static Thread_2 scThread_2 = new Thread_2();
 	public static Thread_3 scThread_3 = new Thread_3();
+	public static App appT = new App();
+	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 }
 class MKeyListener extends KeyAdapter {
 	@Override public void keyPressed(KeyEvent event) {
@@ -39,11 +42,12 @@ class MKeyListener extends KeyAdapter {
 			Globals.scThread_1.start();
 			Globals.scThread_2.start();
 			Globals.scThread_3.start();
+			Globals.cucumberKey = false;
 		}
 	}
 }
-public class programa {
-	public static void main(String[] args) {
+class App extends Thread{ {
+	public void run (){
 		// Key Listener declaration
 		JTextField textField = new JTextField();
 		textField.addKeyListener(new MKeyListener());
@@ -51,13 +55,8 @@ public class programa {
 		jframe.add(textField);
 		jframe.setSize(400, 400);
 		jframe.setVisible(true);
-		//Main Loop of the app
-		while(Globals.loop){
-			if(System.currentTimeMillis() - Globals.timeApp >= 1000 ){
-				System.out.println(Globals.total_timeApp);
-				Globals.total_timeApp++;
-				Globals.timeApp = System.currentTimeMillis();
-			}
-		}
+		//Filling the ArrayListwith the SCobjects
+		Globals.listSCObjects.add(new SCObject("Crab",0,14.61084719307128,7.11707852528936,-153.47114057941724,"none",false,1,true));
+		Globals.cucumberKey = false;
 	}
 }
