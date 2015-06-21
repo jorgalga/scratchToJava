@@ -209,7 +209,8 @@ public class SCparser1 {
         	bw.write("\t\t}\n");
         	
         	bw.write("\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n");
-        	bw.write(Globals.Listener_snippet);
+        	//The starting of the Threads is now controlled by the cucumber Step Definitions
+        	//bw.write(Globals.Listener_snippet);
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
         	bw.write("\t\t}\n");
         	
