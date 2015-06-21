@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 public class SCparser1 {
 	
 	public static void main(String[] args) {
-        
         parseFile();
 	}
     
@@ -47,15 +46,34 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("forward:")){
         	
-        	if(ins.get(0) instanceof String){System.out.println("Es cadena");}
-        	else{System.out.println();}
+        	String steps = "";
+        	
+        	if(ins.get(1) instanceof String || ins.get(1) instanceof Double || ins.get(1) instanceof Integer){
+        		//System.out.println("Es cadena");
+        		steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
+        	}
+        	else{
+        		//System.out.println("Es JASONArray");
+        		JSONArray dataux = (JSONArray) ins.get(1);
+        		if (dataux.get(0).equals("randomFrom:to:")){
+        			steps += "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n"; 
+        			
+        		}
+        	}
         	
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
-        		
+        		s += "\t\t\t"+steps;
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+            	
         	}
         	else{
         		s += "\t\t//Move forward instruction\n";
+        		s += "\t\t"+steps;
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+            
         	}
         }
         if(ins.get(0).equals("turnRight:")){

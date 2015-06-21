@@ -18,6 +18,9 @@ class Thread_1 extends Thread {
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread1] - Step:"+i);}
 			//Move forward instruction
+			Double steps = 1 + Math.random()*3;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
 			//Turn right instruction
 			Globals.listSCObjects.get(0).direction = Globals.listSCObjects.get(0).direction + 15;
 			if(Globals.listSCObjects.get(0).direction >= 180){Globals.listSCObjects.get(0).direction = -180 + (Globals.listSCObjects.get(0).direction-180);}
