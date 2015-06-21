@@ -28,31 +28,64 @@ public class SCparser1 {
     
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
     	String s="";
-        //Events
+        //Events Snippets
         if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
-        //Movement
+        //Movement Snippets
         if(ins.get(0).equals("gotoX:y:")){
-            
+        	if(Globals.openControl){
+        		s += "\t\t\t//Goto XY instruction\n";
+        		
+        	}
+        	else{
+        		s += "\t//Goto XY instruction\n";
+        	}
         }
-        if(ins.get(0).equals("setRotationStyle ")){
-        
+        if(ins.get(0).equals("forward:")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Move forward instruction\n";
+        	}
+        	else{
+        		s += "\t//Move forward instruction\n";
+        	}
+        }
+        if(ins.get(0).equals("turnRight")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Turn right instruction\n";
+        	}
+        	else{
+        		s += "\t//Turn right instruction\n";
+        	}
+        }
+        if(ins.get(0).equals("bounceOffEdge")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//bounce Off Edge instructio\n";
+        	}
+        	else{
+        		s += "\t//bounce Off Edge instructio\n";
+        	}
+        }
+        //Set Value Snippets
+        if(ins.get(0).equals("setRotationStyle")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Set rotation Style instruction\n";
+        	}
+        	else{
+        		s += "\t//Set rotation Style instruction\n";
+        	}
         }
         
-        //Control
+        //Control instructions Snipets
         if(ins.get(0).equals("doForever")){
         	Globals.openControl = true;
+        	s += "\t//Do-forever instruction\n";
         	s = "\tpublic void run(){\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\tSystem.out.println(\"[Thread"+numthread+"] - Step:\"+i);\n";
-        	s+= "\t\t\ttry {\n";
-        	s+= "\t\t\t\tThread.sleep(1000);\n";
-        	s+= "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
-        	s+= "\t\t}\n";
-        	s+= "\t\tGlobals.cucumberKey = false;\n";
-        	//s+= "\t}\n"; //Closing the loop
+        	
+        	
         }
         
         
@@ -149,15 +182,23 @@ public class SCparser1 {
                             file = new File("SCprogram.java");
                             fw = new FileWriter(file.getAbsoluteFile(), true);
                             bw = new BufferedWriter(fw);
-                            bw.write("\t//"+ins.get(0)+"\n"); 
                             bw.write(evalInstruct(ins,Globals.total_numthreads,Globals.i_object));
                             if(Globals.openControl){
-                            	Globals.openControl =  false;
+                            	
                             	//We get The array j of instructions 
                             	JSONArray loopins = (JSONArray) ins.get(1);
                             	for(int k = 0; k < loopins.size(); k++){
-                            		
+                            		JSONArray jsonIns2 = (JSONArray) loopins.get(k);
+                            		System.out.println(jsonIns2.get(0));
+                            		bw.write(evalInstruct(jsonIns2,Globals.total_numthreads,Globals.i_object));                            		
                             	}
+                            	//Closing Loop snippets
+                            	Globals.openControl =  false;
+                            	bw.write ("\t\t\ttry {\n");
+                            	bw.write ("\t\t\t\tThread.sleep(1000);\n");
+                            	bw.write ("\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n");
+                            	bw.write ("\t\t}\n");
+                            	bw.write ("\t\tGlobals.cucumberKey = false;\n");
                             	bw.write("\t}\n");
                             }
                             bw.close(); 

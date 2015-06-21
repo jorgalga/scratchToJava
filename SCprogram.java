@@ -7,14 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 public class SCprogram {}
 class Thread_1 extends Thread {
-	//whenGreenFlag
-	//gotoX:y:
-	//setRotationStyle
-	//doForever
+	//Goto XY instruction
+	//Set rotation Style instruction
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread1] - Step:"+i);
+			//Move forward instruction
+			//bounce Off Edge instructio
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -23,9 +23,6 @@ class Thread_1 extends Thread {
 	}
 }
 class Thread_2 extends Thread {
-	//whenGreenFlag
-	//lookLike:
-	//doForever
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
@@ -38,8 +35,6 @@ class Thread_2 extends Thread {
 	}
 }
 class Thread_3 extends Thread {
-	//whenGreenFlag
-	//doForever
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
@@ -71,9 +66,6 @@ class MKeyListener extends KeyAdapter {
 			Globals.loop = false;
 		}
 		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-			Globals.scThread_1.start();
-			Globals.scThread_2.start();
-			Globals.scThread_3.start();
 			Globals.cucumberKey = false;
 		}
 	}
