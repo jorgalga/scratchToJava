@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -36,10 +37,13 @@ public class SCparser1 {
         if(ins.get(0).equals("gotoX:y:")){
         	if(Globals.openControl){
         		s += "\t\t\t//Goto XY instruction\n";
-        		
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(2)+";\n";
         	}
         	else{
-        		s += "\t//Goto XY instruction\n";
+        		s += "\t\t//Goto XY instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(2)+";\n";
         	}
         }
         if(ins.get(0).equals("forward:")){
@@ -47,7 +51,7 @@ public class SCparser1 {
         		s += "\t\t\t//Move forward instruction\n";
         	}
         	else{
-        		s += "\t//Move forward instruction\n";
+        		s += "\t\t//Move forward instruction\n";
         	}
         }
         if(ins.get(0).equals("turnRight")){
@@ -55,7 +59,7 @@ public class SCparser1 {
         		s += "\t\t\t//Turn right instruction\n";
         	}
         	else{
-        		s += "\t//Turn right instruction\n";
+        		s += "\t\t//Turn right instruction\n";
         	}
         }
         if(ins.get(0).equals("bounceOffEdge")){
@@ -63,7 +67,7 @@ public class SCparser1 {
         		s += "\t\t\t//bounce Off Edge instructio\n";
         	}
         	else{
-        		s += "\t//bounce Off Edge instructio\n";
+        		s += "\t\t//bounce Off Edge instructio\n";
         	}
         }
         //Set Value Snippets
@@ -72,15 +76,14 @@ public class SCparser1 {
         		s += "\t\t\t//Set rotation Style instruction\n";
         	}
         	else{
-        		s += "\t//Set rotation Style instruction\n";
+        		s += "\t\t//Set rotation Style instruction\n";
         	}
         }
         
         //Control instructions Snipets
         if(ins.get(0).equals("doForever")){
         	Globals.openControl = true;
-        	s += "\t//Do-forever instruction\n";
-        	s = "\tpublic void run(){\n";
+        	s= "\t\t//Do-forever instruction\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\tSystem.out.println(\"[Thread"+numthread+"] - Step:\"+i);\n";
@@ -167,6 +170,7 @@ public class SCparser1 {
                         fw = new FileWriter(file.getAbsoluteFile(), true);
                         bw = new BufferedWriter(fw);
                         bw.write("class Thread_"+Globals.total_numthreads+" extends Thread {\n");  //Writing the header
+                        bw.write("\tpublic void run(){\n");
                         bw.close();           
                     }catch (IOException e){}
                     

@@ -7,9 +7,12 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 public class SCprogram {}
 class Thread_1 extends Thread {
-	//Goto XY instruction
-	//Set rotation Style instruction
 	public void run(){
+		//Goto XY instruction
+		Globals.listSCObjects.get(0).scratchX =0;
+		Globals.listSCObjects.get(0).scratchY =0;
+		//Set rotation Style instruction
+		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread1] - Step:"+i);
@@ -24,6 +27,7 @@ class Thread_1 extends Thread {
 }
 class Thread_2 extends Thread {
 	public void run(){
+		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread2] - Step:"+i);
@@ -36,6 +40,7 @@ class Thread_2 extends Thread {
 }
 class Thread_3 extends Thread {
 	public void run(){
+		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread3] - Step:"+i);
