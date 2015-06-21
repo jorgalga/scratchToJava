@@ -11,8 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -47,19 +45,26 @@ public class SCparser1 {
         	}
         }
         if(ins.get(0).equals("forward:")){
+        	
+        	
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
+        		
         	}
         	else{
         		s += "\t\t//Move forward instruction\n";
         	}
         }
-        if(ins.get(0).equals("turnRight")){
+        if(ins.get(0).equals("turnRight:")){
         	if(Globals.openControl){
         		s += "\t\t\t//Turn right instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction + 15;\n";
+        		s += "\t\t\tif(Globals.listSCObjects.get("+(numObject-1)+").direction >= 180){Globals.listSCObjects.get("+(numObject-1)+").direction = -180 + (Globals.listSCObjects.get("+(numObject-1)+").direction-180);}\n";
         	}
         	else{
         		s += "\t\t//Turn right instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction + 15;\n";
+        		s += "\t\tif(Globals.listSCObjects.get("+(numObject-1)+").direction >= 180){Globals.listSCObjects.get("+(numObject-1)+").direction = -180 + (Globals.listSCObjects.get("+(numObject-1)+").direction-180);}\n";
         	}
         }
         if(ins.get(0).equals("bounceOffEdge")){
@@ -74,24 +79,21 @@ public class SCparser1 {
         if(ins.get(0).equals("setRotationStyle")){
         	if(Globals.openControl){
         		s += "\t\t\t//Set rotation Style instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").rotationStyle =\""+ins.get(1)+"\";\n";
         	}
         	else{
         		s += "\t\t//Set rotation Style instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").rotationStyle =\""+ins.get(1)+"\";\n";
         	}
         }
-        
         //Control instructions Snipets
         if(ins.get(0).equals("doForever")){
         	Globals.openControl = true;
         	s= "\t\t//Do-forever instruction\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
-        	s+= "\t\t\tSystem.out.println(\"[Thread"+numthread+"] - Step:\"+i);\n";
-        	
-        	
+        	s+= "\t\t\telse{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
         }
-        
-        
         return s;
     }
     public static void parseFile() {
@@ -216,6 +218,26 @@ public class SCparser1 {
                         bw.close(); 
                     }catch (IOException e){}
                 }//End For
+                JSONArray jsonCostumes = (JSONArray) jsonChild.get("costumes");
+                JSONObject jsonCos;
+                String caux;
+                for(int i=0; i< jsonCostumes.size(); i++){
+                	caux="";
+                	jsonCos = (JSONObject) jsonCostumes.get(i);
+                   	caux = "new Costume(\"";
+                   	caux+= (String) jsonCos.get("costumeName")+"\",";
+                   	caux+= jsonCos.get("baseLayerID")+",";
+                   	caux+= "\""+(String) jsonCos.get("baseLayerMD5")+"\",";
+                   	caux+= jsonCos.get("bitmapResolution")+",";
+                   	caux+= jsonCos.get("rotationCenterX")+",";
+                   	caux+= jsonCos.get("rotationCenterY")+")";
+                   	
+                   	
+                   	//System.out.println(caux);
+                	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
+                }
+                
+                
             }//End Object iterator
         }
         catch(Exception e) {
@@ -265,7 +287,9 @@ public class SCparser1 {
         	
         	bw.write("\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n");
         	//The starting of the Threads is now controlled by the cucumber Step Definitions
-        	//bw.write(Globals.Listener_snippet);
+        	//By default the construction is done by cucumber
+        	if(Globals.cucumberBuilt == false){bw.write(Globals.Listener_snippet);}
+        	
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
         	bw.write("\t\t}\n");
         	
@@ -295,14 +319,12 @@ public class SCparser1 {
             bw.write("\t\tGlobals.cucumberKey = false;\n");
             bw.write("\t}\n");//Close run function
             bw.write("}\n");//Close App class
-            
             bw.close(); 
         }catch (IOException e){}
-       
-       
     }
 }
 class Globals{
+	public static boolean cucumberBuilt = true;
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
 	public static String SCObjets_snippet ="";

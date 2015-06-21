@@ -12,11 +12,15 @@ class Thread_1 extends Thread {
 		Globals.listSCObjects.get(0).scratchX =0;
 		Globals.listSCObjects.get(0).scratchY =0;
 		//Set rotation Style instruction
+		Globals.listSCObjects.get(0).rotationStyle ="don't rotate";
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
-			System.out.println("[Thread1] - Step:"+i);
+			else{System.out.println("[Thread1] - Step:"+i);}
 			//Move forward instruction
+			//Turn right instruction
+			Globals.listSCObjects.get(0).direction = Globals.listSCObjects.get(0).direction + 15;
+			if(Globals.listSCObjects.get(0).direction >= 180){Globals.listSCObjects.get(0).direction = -180 + (Globals.listSCObjects.get(0).direction-180);}
 			//bounce Off Edge instructio
 			try {
 				Thread.sleep(1000);
@@ -30,7 +34,7 @@ class Thread_2 extends Thread {
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
-			System.out.println("[Thread2] - Step:"+i);
+			else{System.out.println("[Thread2] - Step:"+i);}
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -43,7 +47,7 @@ class Thread_3 extends Thread {
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
-			System.out.println("[Thread3] - Step:"+i);
+			else{System.out.println("[Thread3] - Step:"+i);}
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -86,6 +90,13 @@ class App extends Thread{
 		jframe.setVisible(true);
 		//Filling the ArrayListwith the SCobjects
 		Globals.listSCObjects.add(new SCObject("Crab",0,14.61084719307128,7.11707852528936,-153.47114057941724,"none",false,1,true));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("starter crab",1,"61dd4003375099d6aaf36336bd1b1ec9.svg",1,240,106));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("crab legs",2,"2e24ee5d950c8f711bcb746201cb1972.svg",1,240,105));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("cheerful crab",3,"08bc5cea610a0ca84a06d7900303ea77.svg",1,242,109));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("elated crab",4,"703b9ec95f20563f0aa9476f990580f4.svg",1,240,106));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("upset crab",5,"13561e82a3e18064cd6fa9bf59c780ac.svg",1,240,105));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("mischevious crab",6,"954734e5739b46c0b6ad334ba28b5187.svg",1,240,105));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("dazed crab",7,"dc727879610170c6e7d1bad44fe55812.svg",1,240,105));
 		Globals.cucumberKey = false;
 	}
 }
