@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -46,6 +47,8 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("forward:")){
         	
+        	if(ins.get(0) instanceof String){System.out.println("Es cadena");}
+        	else{System.out.println();}
         	
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
@@ -67,12 +70,25 @@ public class SCparser1 {
         		s += "\t\tif(Globals.listSCObjects.get("+(numObject-1)+").direction >= 180){Globals.listSCObjects.get("+(numObject-1)+").direction = -180 + (Globals.listSCObjects.get("+(numObject-1)+").direction-180);}\n";
         	}
         }
+        if(ins.get(0).equals("turnLeft:")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Turn left instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction - 15;\n";
+        		s += "\t\t\tif(Globals.listSCObjects.get("+(numObject-1)+").direction >= -180){Globals.listSCObjects.get("+(numObject-1)+").direction = 180 - (Math.abs(Globals.listSCObjects.get("+(numObject-1)+").direction+180));}\n";
+        	}
+        	else{
+        		s += "\t\t//Turn left instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction - 15;\n";
+        		s += "\t\tif(Globals.listSCObjects.get("+(numObject-1)+").direction >= -180){Globals.listSCObjects.get("+(numObject-1)+").direction = 180 - (Math.abs(Globals.listSCObjects.get("+(numObject-1)+").direction+180));}\n";
+        	
+        	}
+        }
         if(ins.get(0).equals("bounceOffEdge")){
         	if(Globals.openControl){
         		s += "\t\t\t//bounce Off Edge instructio\n";
         	}
         	else{
-        		s += "\t\t//bounce Off Edge instructio\n";
+        		s += "\t\t//bounce Off Edge instruction\n";
         	}
         }
         //Set Value Snippets
