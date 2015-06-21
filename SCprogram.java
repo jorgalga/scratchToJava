@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+public class SCprogram {}
 class Thread_1 extends Thread {
 	//whenGreenFlag
 	//gotoX:y:
@@ -53,7 +54,6 @@ class Globals {
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
 	public static long timeApp = System.currentTimeMillis();
-	public static SCObject scObject_1 = new SCObject();
 	public static Thread_1 scThread_1 = new Thread_1();
 	public static Thread_2 scThread_2 = new Thread_2();
 	public static Thread_3 scThread_3 = new Thread_3();
@@ -74,7 +74,7 @@ class MKeyListener extends KeyAdapter {
 		}
 	}
 }
-class App extends Thread{ {
+class App extends Thread{
 	public void run (){
 		// Key Listener declaration
 		JTextField textField = new JTextField();

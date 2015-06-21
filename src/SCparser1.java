@@ -68,14 +68,19 @@ public class SCparser1 {
         		+ "import java.awt.event.KeyEvent;\n"
         		+ "import java.util.ArrayList;\n"
         		+ "import javax.swing.JFrame;\n"
-        		+ "import javax.swing.JTextField;\n";
+        		+ "import javax.swing.JTextField;\n"
+        		+ "public class SCprogram {}\n";
         File file;
         FileWriter fw; 
         BufferedWriter bw;
         try{
-            file = new File("programa.java");
+            file = new File("SCprogram.java");
             if(!file.exists()){
                 file.createNewFile();
+            }
+            else{
+            	file.delete();
+            	file.createNewFile();
             }
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
@@ -94,7 +99,7 @@ public class SCparser1 {
             while (it.hasNext()) {
             	Globals.i_object++;
                 System.out.println("[NEW CHILD]");
-                Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
+                //Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
                 JSONObject jsonChild = (JSONObject) it.next();
                 String objName = (String) jsonChild.get("objName");
                 Object cci = jsonChild.get("currentCostumeIndex");
@@ -122,7 +127,7 @@ public class SCparser1 {
                     Globals.total_numthreads++;
                     Globals.SCThreads_snippet += "\tpublic static Thread_"+Globals.total_numthreads+" scThread_"+Globals.total_numthreads+" = new Thread_"+Globals.total_numthreads+"();\n";
                     try{
-                        file = new File("programa.java");
+                        file = new File("SCprogram.java");
                         fw = new FileWriter(file.getAbsoluteFile(), true);
                         bw = new BufferedWriter(fw);
                         bw.write("class Thread_"+Globals.total_numthreads+" extends Thread {\n");  //Writing the header
@@ -138,7 +143,7 @@ public class SCparser1 {
                         //System.out.println("----"+ins.get(0));
                         
                         try{
-                            file = new File("programa.java");
+                            file = new File("SCprogram.java");
                             fw = new FileWriter(file.getAbsoluteFile(), true);
                             bw = new BufferedWriter(fw);
                             bw.write("\t//"+ins.get(0)+"\n"); 
@@ -147,7 +152,7 @@ public class SCparser1 {
                         }catch (IOException e){}
                     }//End for
                     try{
-                        file = new File("programa.java");
+                        file = new File("SCprogram.java");
                         fw = new FileWriter(file.getAbsoluteFile(), true);
                         bw = new BufferedWriter(fw);
                         bw.write("}\n");  
@@ -170,7 +175,7 @@ public class SCparser1 {
         }
         //Writing The Globals variables Class snippet
         try{
-            file = new File("programa.java");
+            file = new File("SCprogram.java");
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             bw.write("class Globals {\n"); 
@@ -179,7 +184,7 @@ public class SCparser1 {
             bw.write("\tpublic static boolean loop = true;\n");
             bw.write("\tpublic static long total_timeApp = 0;\n");
             bw.write("\tpublic static long timeApp = System.currentTimeMillis();\n");
-            bw.write(Globals.SCObjets_snippet);
+            //bw.write(Globals.SCObjets_snippet);
             bw.write(Globals.SCThreads_snippet);
             bw.write("\tpublic static App appT = new App();\n");
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
@@ -189,7 +194,7 @@ public class SCparser1 {
         
         //Writing the KeyListener Class snippet
         try{
-        	file = new File("programa.java");
+        	file = new File("SCprogram.java");
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
         	bw.write("class MKeyListener extends KeyAdapter {\n");
@@ -211,11 +216,11 @@ public class SCparser1 {
         }catch (IOException e){}
         //Writing the App main snippet
         try{
-        	file = new File("programa.java");
+        	file = new File("SCprogram.java");
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             
-            bw.write("class App extends Thread{ {\n");
+            bw.write("class App extends Thread{\n");
             bw.write("\tpublic void run (){\n");
             //Writing Key Listener declaration
             bw.write("\t\t// Key Listener declaration\n");
