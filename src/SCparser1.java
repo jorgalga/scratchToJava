@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -43,6 +44,7 @@ public class SCparser1 {
         if(command.equals("doForever")){
         	s = "\tpublic void run(){\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
+        	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\tSystem.out.println(\"[Thread"+numthread+"] - Step:\"+i);\n";
         	s+= "\t\t\ttry {\n";
         	s+= "\t\t\t\tThread.sleep(1000);\n";
@@ -180,6 +182,7 @@ public class SCparser1 {
             bw = new BufferedWriter(fw);
             bw.write("class Globals {\n"); 
             bw.write("\tpublic static int steps ;\n");
+            bw.write("\tpublic static boolean infloop = true ;\n");
             bw.write("\tpublic static boolean cucumberKey = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
             bw.write("\tpublic static long total_timeApp = 0;\n");

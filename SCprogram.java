@@ -13,6 +13,7 @@ class Thread_1 extends Thread {
 	//doForever
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
+			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread1] - Step:"+i);
 			try {
 				Thread.sleep(1000);
@@ -27,6 +28,7 @@ class Thread_2 extends Thread {
 	//doForever
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
+			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread2] - Step:"+i);
 			try {
 				Thread.sleep(1000);
@@ -40,6 +42,7 @@ class Thread_3 extends Thread {
 	//doForever
 	public void run(){
 		for(int i=0; i < Globals.steps; i++){
+			if(Globals.infloop == true){i--;}//i does not increment
 			System.out.println("[Thread3] - Step:"+i);
 			try {
 				Thread.sleep(1000);
@@ -50,6 +53,7 @@ class Thread_3 extends Thread {
 }
 class Globals {
 	public static int steps ;
+	public static boolean infloop = true ;
 	public static boolean cucumberKey = true;
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
