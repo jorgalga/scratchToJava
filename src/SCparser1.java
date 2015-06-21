@@ -26,22 +26,23 @@ public class SCparser1 {
         parseFile();
 	}
     
-    public static String evalInstruct(String command, int numthread, int numObject) {
+    public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
     	String s="";
         //Events
-        if(command.equals("whenGreenFlag")){
+        if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
         //Movement
-        if(command.equals("gotoX:y:")){
+        if(ins.get(0).equals("gotoX:y:")){
             
         }
-        if(command.equals("setRotationStyle ")){
+        if(ins.get(0).equals("setRotationStyle ")){
         
         }
         
         //Control
-        if(command.equals("doForever")){
+        if(ins.get(0).equals("doForever")){
+        	Globals.openControl = true;
         	s = "\tpublic void run(){\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
@@ -51,7 +52,7 @@ public class SCparser1 {
         	s+= "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
         	s+= "\t\t}\n";
         	s+= "\t\tGlobals.cucumberKey = false;\n";
-        	s+= "\t}\n";
+        	//s+= "\t}\n"; //Closing the loop
         }
         
         
@@ -149,7 +150,16 @@ public class SCparser1 {
                             fw = new FileWriter(file.getAbsoluteFile(), true);
                             bw = new BufferedWriter(fw);
                             bw.write("\t//"+ins.get(0)+"\n"); 
-                            bw.write(evalInstruct((String) ins.get(0),Globals.total_numthreads,Globals.i_object));
+                            bw.write(evalInstruct(ins,Globals.total_numthreads,Globals.i_object));
+                            if(Globals.openControl){
+                            	Globals.openControl =  false;
+                            	//We get The array j of instructions 
+                            	JSONArray loopins = (JSONArray) ins.get(1);
+                            	for(int k = 0; k < loopins.size(); k++){
+                            		
+                            	}
+                            	bw.write("\t}\n");
+                            }
                             bw.close(); 
                         }catch (IOException e){}
                     }//End for
@@ -254,4 +264,5 @@ class Globals{
 	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
 	public static String Listener_snippet = "";
+	public static boolean openControl = false;
 }
