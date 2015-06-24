@@ -19,6 +19,21 @@ import java.io.PrintWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import java.io.File;
+
+import java.util.StringTokenizer;
+
+import java.awt.image.BufferedImage;
+import javax.swing.*;
+import javax.imageio.ImageIO;
+import java.net.URL;
 public class SCparser1 {
 	
 	public static void main(String[] args) {
@@ -133,8 +148,11 @@ public class SCparser1 {
     }
     public static void parseFile() {
         
+    	String workingDir = System.getProperty("user.dir");
+  	    //System.out.println("Current working directory : " + workingDir);
+    	
         //Aux variables
-        final String filePath = "scratch/project.json";
+        final String filePath = workingDir+ "/scratch/project.json";
         FileReader reader = null;
         
         //Writing The header lines
@@ -265,8 +283,35 @@ public class SCparser1 {
                    	caux+= "\""+(String) jsonCos.get("baseLayerMD5")+"\",";
                    	caux+= jsonCos.get("bitmapResolution")+",";
                    	caux+= jsonCos.get("rotationCenterX")+",";
-                   	caux+= jsonCos.get("rotationCenterY")+")";
+                   	caux+= jsonCos.get("rotationCenterY")+",";
                    	
+                   	
+                   	//Opening .svg file for getting the width and the height;
+                   	String formatFile = "";
+                	StringTokenizer st2 = new StringTokenizer((String) jsonCos.get("baseLayerMD5"), ".");
+                	while (st2.hasMoreElements()) { formatFile = (String) st2.nextElement(); }
+                	//System.out.println(formatFile);
+                	if(formatFile.equals("svg")){
+                		File fXmlFile = new File( workingDir + "/scratch/"+jsonCos.get("baseLayerID") + ".svg");
+                    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    	Document doc = dBuilder.parse(fXmlFile);
+                    	
+                    	NodeList nList = doc.getElementsByTagName("svg");
+                    	Node nNode = nList.item(0);
+                    	Element eElement = (Element) nNode;
+                    	System.out.println("Width : " + eElement.getAttribute("width"));
+                    	
+                    	caux+= eElement.getAttribute("width")+",";
+                       	caux+= eElement.getAttribute("height")+")";
+                	}
+                	else {
+                		
+                	}
+                	}
+                	
+                	
+                	
                    	
                    	//System.out.println(caux);
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
