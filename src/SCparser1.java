@@ -53,20 +53,18 @@ public class SCparser1 {
         		steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
         	}
         	else{
+        		//There is an operator expresion
         		//System.out.println("Es JASONArray");
         		JSONArray dataux = (JSONArray) ins.get(1);
         		if (dataux.get(0).equals("randomFrom:to:")){
         			steps += "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n"; 
-        			
         		}
         	}
-        	
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
         		s += "\t\t\t"+steps;
         		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
         		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
-            	
         	}
         	else{
         		s += "\t\t//Move forward instruction\n";
@@ -103,10 +101,13 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("bounceOffEdge")){
         	if(Globals.openControl){
-        		s += "\t\t\t//bounce Off Edge instructio\n";
+        		s += "\t\t\t//bounce Off Edge instruction\n";
+        		
+        		
         	}
         	else{
         		s += "\t\t//bounce Off Edge instruction\n";
+        		
         	}
         }
         //Set Value Snippets
@@ -133,7 +134,7 @@ public class SCparser1 {
     public static void parseFile() {
         
         //Aux variables
-        final String filePath = "project.json";
+        final String filePath = "scratch/project.json";
         FileReader reader = null;
         
         //Writing The header lines
