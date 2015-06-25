@@ -116,6 +116,16 @@ public class SCparser1 {
         	
         	}
         }
+        if(ins.get(0).equals("heading:")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Heading left instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = "+ins.get(1)+";\n"; 
+        	}
+        	else{
+        		s += "\t\t//Heading instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = "+ins.get(1)+";\n";
+        	}
+        }
         if(ins.get(0).equals("bounceOffEdge")){
         	if(Globals.openControl){
         		s += "\t\t\t//bounce Off Edge instruction\n";
