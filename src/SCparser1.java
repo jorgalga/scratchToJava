@@ -126,6 +126,27 @@ public class SCparser1 {
         		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").direction = "+ins.get(1)+";\n";
         	}
         }
+        if(ins.get(0).equals("changeXposBy:")) {
+        	if(Globals.openControl){
+        		s += "\t\t\t//changeXposBy left instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
+        	}
+        	else{
+        		s += "\t\t//changeXposBy instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
+        	}
+        }
+        if(ins.get(0).equals("changeYposBy:")) {
+        	if(Globals.openControl){
+        		s += "\t\t\t//changeYposBy left instruction\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(1)+";\n";
+        	}
+        	else{
+        		s += "\t\t//changeYposBy instruction\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(1)+";\n";
+        	}
+        }
+        
         if(ins.get(0).equals("bounceOffEdge")){
         	if(Globals.openControl){
         		s += "\t\t\t//bounce Off Edge instruction\n";
