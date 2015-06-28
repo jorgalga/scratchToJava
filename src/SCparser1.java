@@ -26,15 +26,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-
-
-
-
-
-
-
-import cucumber.features.messageListener;
-
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -49,6 +40,8 @@ public class SCparser1 {
         parseFile();
 	}
 	public static void initMsgSnippet(){
+		
+		
 		Globals.MessageEvents_snippet += "interface messageListener { void receptorEvent(String msg);}\n";
 		Globals.MessageEvents_snippet += "class Initiater {\n";
 		Globals.MessageEvents_snippet += "\tprivate ArrayList<messageListener> listeners = new ArrayList<messageListener>(); \n";
@@ -64,8 +57,7 @@ public class SCparser1 {
 		Globals.MessageEvents_snippet += "\t@Override\n\tpublic void receptorEvent(String msg) {\n";
 		
 		
-		//Globals.MessageEvents_snippet += "\t}\n";
-		//Globals.MessageEvents_snippet += "}\n";
+		
 	}
     
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
@@ -75,11 +67,19 @@ public class SCparser1 {
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
         if(ins.get(0).equals("whenIReceive")){
-        	if(Globals.msgSending == false){initMsgSnippet();}
+        	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
+        	
+        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+Globals.total_numthreads+".start();}\n";
         	
         }
         if(ins.get(0).equals("broadcast:")){
-        	
+        	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
+        	if(Globals.openControl){
+        		s+="\t\t\tGlobals.initiater.TriggerMessage(\""+ins.get(1)+"\");\n";
+        	}
+        	else{
+        		s+="\t\tGlobals.initiater.TriggerMessage(\""+ins.get(1)+"\");\n";
+        	}
         }
         //Movement Snippets
         if(ins.get(0).equals("gotoX:y:")){
@@ -265,6 +265,8 @@ public class SCparser1 {
         //Writing The header lines
         String imports = "//Scratch parsed in Java \n";
         imports += "package cucumber.features;\n"
+        		+ "import java.awt.event.ActionEvent;\n"
+        		+ "import java.awt.event.ActionListener;\n"
         		+ "import java.awt.event.KeyAdapter;\n"
         		+ "import java.awt.event.KeyEvent;\n"
         		+ "import java.util.ArrayList;\n"
@@ -448,6 +450,10 @@ public class SCparser1 {
             bw.write("\tpublic static boolean loop = true;\n");
             bw.write("\tpublic static long total_timeApp = 0;\n");
             bw.write("\tpublic static long timeApp = System.currentTimeMillis();\n");
+            if(Globals.msgSending){
+            	bw.write("\tpublic static Initiater initiater = new Initiater();\n");
+            	bw.write("\tpublic static Responder responder = new Responder();\n");
+            }
             //bw.write(Globals.SCObjets_snippet);
             bw.write(Globals.SCThreads_snippet);
             bw.write("\tpublic static App appT = new App();\n");
@@ -501,8 +507,15 @@ public class SCparser1 {
             bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
             bw.write(Globals.SCObjets_AddListSnippet);
             bw.write("\t\tGlobals.cucumberKey = false;\n");
+            bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");
             bw.write("\t}\n");//Close run function
             bw.write("}\n");//Close App class
+            
+            if(Globals.msgSending){
+            	Globals.MessageEvents_snippet += "\t}\n";
+        		Globals.MessageEvents_snippet += "}\n";
+        		bw.write(Globals.MessageEvents_snippet);
+            }
             bw.close(); 
         }catch (IOException e){}
     }

@@ -1,5 +1,7 @@
 //Scratch parsed in Java 
 package cucumber.features;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -80,6 +82,15 @@ class Thread_3 extends Thread {
 		Globals.cucumberKey = false;
 	}
 }
+class Thread_4 extends Thread {
+	public void run(){
+		//Set rotation Style instruction
+		Globals.listSCObjects.get(0).rotationStyle ="all around";
+}
+class Thread_5 extends Thread {
+	public void run(){
+		Globals.initiater.TriggerMessage("message1");
+}
 class Globals {
 	public static int steps ;
 	public static int wScreen = 480;
@@ -89,9 +100,13 @@ class Globals {
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
 	public static long timeApp = System.currentTimeMillis();
+	public static Initiater initiater = new Initiater();
+	public static Responder responder = new Responder();
 	public static Thread_1 scThread_1 = new Thread_1();
 	public static Thread_2 scThread_2 = new Thread_2();
 	public static Thread_3 scThread_3 = new Thread_3();
+	public static Thread_4 scThread_4 = new Thread_4();
+	public static Thread_5 scThread_5 = new Thread_5();
 	public static App appT = new App();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 }
@@ -116,7 +131,7 @@ class App extends Thread{
 		jframe.setSize(400, 400);
 		jframe.setVisible(true);
 		//Filling the ArrayListwith the SCobjects
-		Globals.listSCObjects.add(new SCObject("Crab",0,14.61084719307128,7.11707852528936,-153.47114057941724,"none",false,1,true));
+		Globals.listSCObjects.add(new SCObject("Crab",4,4.95940168944978,-28.141928973185802,-108.47114057941724,"normal",false,1,true));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("starter crab",1,"61dd4003375099d6aaf36336bd1b1ec9.svg",1,240,106,348,235));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("crab legs",2,"2e24ee5d950c8f711bcb746201cb1972.svg",1,240,105,348,237));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("cheerful crab",3,"08bc5cea610a0ca84a06d7900303ea77.svg",1,242,109,348,235));
@@ -125,5 +140,23 @@ class App extends Thread{
 		Globals.listSCObjects.get(0).costumes.add(new Costume("mischevious crab",6,"954734e5739b46c0b6ad334ba28b5187.svg",1,240,105,348,312));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("dazed crab",7,"dc727879610170c6e7d1bad44fe55812.svg",1,240,105,348,236));
 		Globals.cucumberKey = false;
+		Globals.initiater.addListener(Globals.responder);
+	}
+}
+interface messageListener { void receptorEvent(String msg);}
+class Initiater {
+	private ArrayList<messageListener> listeners = new ArrayList<messageListener>(); 
+	public void addListener(messageListener toAdd) {
+		listeners.add(toAdd);
+	}
+	public void TriggerMessage(String msg) {
+		for (messageListener hl : listeners)
+			hl.receptorEvent(msg);
+	}
+}
+class Responder implements messageListener {
+	@Override
+	public void receptorEvent(String msg) {
+		if(msg.equals("message1")){Globals.scThread_4.start();}
 	}
 }
