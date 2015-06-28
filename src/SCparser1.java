@@ -483,4 +483,5 @@ class Globals{
 	public static String SCThreads_snippet = "";
 	public static String Listener_snippet = "";
 	public static boolean openControl = false;
+	public static boolean msgSending = false;
 }
