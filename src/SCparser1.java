@@ -28,6 +28,13 @@ import org.w3c.dom.Element;
 
 
 
+
+
+
+
+
+import cucumber.features.messageListener;
+
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -41,12 +48,38 @@ public class SCparser1 {
 	public static void main(String[] args) {
         parseFile();
 	}
+	public static void initMsgSnippet(){
+		Globals.MessageEvents_snippet += "interface messageListener { void receptorEvent(String msg);}\n";
+		Globals.MessageEvents_snippet += "class Initiater {\n";
+		Globals.MessageEvents_snippet += "\tprivate ArrayList<messageListener> listeners = new ArrayList<messageListener>(); \n";
+		Globals.MessageEvents_snippet += "\tpublic void addListener(messageListener toAdd) {\n";
+		Globals.MessageEvents_snippet += "\t\tlisteners.add(toAdd);\n";
+		Globals.MessageEvents_snippet += "\t}\n";
+		Globals.MessageEvents_snippet += "\tpublic void TriggerMessage(String msg) {\n";
+		Globals.MessageEvents_snippet += "\t\tfor (messageListener hl : listeners)\n";
+		Globals.MessageEvents_snippet += "\t\t\thl.receptorEvent(msg);\n";
+		Globals.MessageEvents_snippet += "\t}\n";
+		Globals.MessageEvents_snippet += "}\n";
+		Globals.MessageEvents_snippet += "class Responder implements messageListener {\n";
+		Globals.MessageEvents_snippet += "\t@Override\n\tpublic void receptorEvent(String msg) {\n";
+		
+		
+		//Globals.MessageEvents_snippet += "\t}\n";
+		//Globals.MessageEvents_snippet += "}\n";
+	}
     
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
     	String s="";
         //Events Snippets
         if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
+        }
+        if(ins.get(0).equals("whenIReceive")){
+        	if(Globals.msgSending == false){initMsgSnippet();}
+        	
+        }
+        if(ins.get(0).equals("broadcast:")){
+        	
         }
         //Movement Snippets
         if(ins.get(0).equals("gotoX:y:")){
@@ -478,6 +511,7 @@ class Globals{
 	public static boolean cucumberBuilt = true;
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
+	public static String MessageEvents_snippet = "";
 	public static String SCObjets_snippet ="";
 	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
