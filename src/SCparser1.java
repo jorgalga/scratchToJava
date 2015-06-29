@@ -25,7 +25,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -69,7 +68,7 @@ public class SCparser1 {
         if(ins.get(0).equals("whenIReceive")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
         	
-        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+Globals.total_numthreads+".start();}\n";
+        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+".start();}\n";
         	
         }
         if(ins.get(0).equals("broadcast:")){
@@ -232,6 +231,17 @@ public class SCparser1 {
         		s += "\t\t}\n";
         	}
         }
+        
+        //Appereance snippets
+        if(ins.get(0).equals("lookLike:")){
+        	if(Globals.openControl){
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").setCostumebyID(\""+(ins.get(1))+"\");\n";
+        	}
+        	else{
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").setCostumebyID(\""+(ins.get(1))+"\");\n";
+        	}
+        }
+        
         //Set Value Snippets
         if(ins.get(0).equals("setRotationStyle")){
         	if(Globals.openControl){
@@ -246,6 +256,7 @@ public class SCparser1 {
         //Control instructions Snipets
         if(ins.get(0).equals("doForever")){
         	Globals.openControl = true;
+        	Globals.clevel++;
         	s= "\t\t//Do-forever instruction\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
@@ -362,12 +373,13 @@ public class SCparser1 {
                             	}
                             	//Closing Loop snippets
                             	Globals.openControl =  false;
+                            	Globals.clevel--;
                             	bw.write ("\t\t\ttry {\n");
                             	bw.write ("\t\t\t\tThread.sleep(1000);\n");
                             	bw.write ("\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n");
                             	bw.write ("\t\t}\n");
                             	bw.write ("\t\tGlobals.cucumberKey = false;\n");
-                            	bw.write("\t}\n");
+                            	
                             }
                             bw.close(); 
                         }catch (IOException e){}
@@ -376,6 +388,7 @@ public class SCparser1 {
                         file = new File("SCprogram.java");
                         fw = new FileWriter(file.getAbsoluteFile(), true);
                         bw = new BufferedWriter(fw);
+                        bw.write("\t}\n");
                         bw.write("}\n");  
                         bw.close(); 
                     }catch (IOException e){}
@@ -529,6 +542,7 @@ class Globals{
 	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
 	public static String Listener_snippet = "";
+	public static int clevel = 0;
 	public static boolean openControl = false;
 	public static boolean msgSending = false;
 }

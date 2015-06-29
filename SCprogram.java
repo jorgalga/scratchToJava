@@ -58,6 +58,7 @@ class Thread_1 extends Thread {
 }
 class Thread_2 extends Thread {
 	public void run(){
+		Globals.listSCObjects.get(0).setCostumebyID("starter crab");
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
@@ -86,10 +87,12 @@ class Thread_4 extends Thread {
 	public void run(){
 		//Set rotation Style instruction
 		Globals.listSCObjects.get(0).rotationStyle ="all around";
+	}
 }
 class Thread_5 extends Thread {
 	public void run(){
 		Globals.initiater.TriggerMessage("message1");
+	}
 }
 class Globals {
 	public static int steps ;
