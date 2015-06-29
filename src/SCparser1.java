@@ -25,6 +25,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -239,6 +240,14 @@ public class SCparser1 {
         	}
         	else{
         		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").setCostumebyID(\""+(ins.get(1))+"\");\n";
+        	}
+        }
+        if(ins.get(0).equals("nextCostume")){
+        	if(Globals.openControl){
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").nextCostume();\n";
+        	}
+        	else{
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").nextCostume();\n";
         	}
         }
         
