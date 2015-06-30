@@ -63,6 +63,19 @@ public class SCparser1 {
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
     	String s="";
         //Events Snippets
+    	if(ins.get(0).equals("whenKeyPressed")){
+    		if(ins.get(1).equals("space")){
+    			Globals.KeyPress_snippet += "\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n" ;
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n;";
+    			Globals.KeyPress_snippet += "\t\t}\n"; 
+    		}
+    		else{
+    			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == \""+ins.get(1)+"\") {\n" ;
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n;";
+    			Globals.KeyPress_snippet += "\t\t}\n"; 
+    		}
+    	}
+    	
         if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
@@ -505,6 +518,9 @@ public class SCparser1 {
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
         	bw.write("\t\t}\n");
         	
+        	//Adding KeypressEvents
+        	bw.write(Globals.KeyPress_snippet);
+        	
         	bw.write("\t}\n");
         	bw.write("}\n");
             bw.close(); 
@@ -551,6 +567,7 @@ class Globals{
 	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
 	public static String Listener_snippet = "";
+	public static String KeyPress_snippet = "";
 	public static int clevel = 0;
 	public static boolean openControl = false;
 	public static boolean msgSending = false;
