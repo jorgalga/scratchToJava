@@ -63,6 +63,7 @@ class Thread_2 extends Thread {
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread2] - Step:"+i);}
+			Globals.listSCObjects.get(0).nextCostume();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -134,7 +135,7 @@ class App extends Thread{
 		jframe.setSize(400, 400);
 		jframe.setVisible(true);
 		//Filling the ArrayListwith the SCobjects
-		Globals.listSCObjects.add(new SCObject("Crab",4,4.95940168944978,-28.141928973185802,-108.47114057941724,"normal",false,1,true));
+		Globals.listSCObjects.add(new SCObject("Crab",4,4.95940168944978,-28.141928973185802,-108.47114057941724,"normal",false,1,true,1));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("starter crab",1,"61dd4003375099d6aaf36336bd1b1ec9.svg",1,240,106,348,235));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("crab legs",2,"2e24ee5d950c8f711bcb746201cb1972.svg",1,240,105,348,237));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("cheerful crab",3,"08bc5cea610a0ca84a06d7900303ea77.svg",1,242,109,348,235));

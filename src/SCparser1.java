@@ -336,7 +336,7 @@ public class SCparser1 {
                 
                 System.out.println("objName: " + objName);
                 
-                Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.add(new SCObject(\""+objName+"\","+cci+","+sx+","+sy+","+d+",\""+rs+"\","+isd+","+iil+","+vis+"));\n";
+                Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.add(new SCObject(\""+objName+"\","+cci+","+sx+","+sy+","+d+",\""+rs+"\","+isd+","+iil+","+vis+","+Globals.i_object+"));\n";
                 
                 JSONArray jsonScripts = (JSONArray) jsonChild.get("scripts");
                 
