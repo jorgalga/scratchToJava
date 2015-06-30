@@ -10,6 +10,10 @@ import javax.swing.JTextField;
 public class SCprogram {}
 class Thread_1 extends Thread {
 	public void run(){
+		System.out.println("I say: Hello!");
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {e.printStackTrace();}
 		Globals.listSCObjects.get(0).setCostumebyID("costume2");
 		Globals.listSCObjects.get(0).nextCostume();
 	}
@@ -60,6 +64,5 @@ class App extends Thread{
 		Globals.listSCObjects.get(0).costumes.add(new Costume("costume1",1,"09dc888b0b7df19f70d81588ae73420e.svg",1,47,55,348,235));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("costume2",2,"3696356a03a8d938318876a593572843.svg",1,47,55,348,237));
 		Globals.cucumberKey = false;
-		Globals.initiater.addListener(Globals.responder);
 	}
 }

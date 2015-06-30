@@ -75,7 +75,6 @@ public class SCparser1 {
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     	}
-    	
         if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
@@ -263,6 +262,23 @@ public class SCparser1 {
         		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").nextCostume();\n";
         	}
         }
+        if(ins.get(0).equals("say:duration:elapsed:from:")){
+        	int auxv = Integer.parseInt(ins.get(2).toString());
+        	if(Globals.openControl){
+        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\");\n";
+        		s += "\t\t\ttry {\n";
+        		s += "\t\t\t\tThread.sleep("+(auxv*1000)+");\n";
+        		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	
+        	}
+        	else{
+        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\");\n";
+        		s += "\t\ttry {\n";
+        		s += "\t\t\tThread.sleep("+(auxv*1000)+");\n";
+        		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	}
+        }
+        
         
         //Set Value Snippets
         if(ins.get(0).equals("setRotationStyle")){
@@ -545,7 +561,7 @@ public class SCparser1 {
             bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
             bw.write(Globals.SCObjets_AddListSnippet);
             bw.write("\t\tGlobals.cucumberKey = false;\n");
-            bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");
+            if(Globals.msgSending){bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");}
             bw.write("\t}\n");//Close run function
             bw.write("}\n");//Close App class
             
