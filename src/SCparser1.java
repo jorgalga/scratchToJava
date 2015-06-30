@@ -265,17 +265,26 @@ public class SCparser1 {
         if(ins.get(0).equals("say:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(ins.get(2).toString());
         	if(Globals.openControl){
-        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\");\n";
+        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\" and I go to sleep);\n";
         		s += "\t\t\ttry {\n";
         		s += "\t\t\t\tThread.sleep("+(auxv*1000)+");\n";
         		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
         	
         	}
         	else{
-        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\");\n";
+        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\" and I go to sleep);\n";
         		s += "\t\ttry {\n";
         		s += "\t\t\tThread.sleep("+(auxv*1000)+");\n";
         		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	}
+        }
+        if(ins.get(0).equals("say:")){
+        	int auxv = Integer.parseInt(ins.get(2).toString());
+        	if(Globals.openControl){
+        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\");\n";
+        	}
+        	else{
+        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\");\n";
         	}
         }
         
