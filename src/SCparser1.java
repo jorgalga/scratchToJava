@@ -1,3 +1,4 @@
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
@@ -25,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
 
 
 
@@ -314,6 +316,22 @@ public class SCparser1 {
         		s += "\t\tSystem.out.println(\"I think: "+ins.get(1)+"\");\n";
         	}
         }
+        if(ins.get(0).equals("show")){
+        	if(Globals.openControl){
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
+        	}
+        	else{
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
+        	}
+        }
+        if(ins.get(0).equals("hide")){
+        	if(Globals.openControl){
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
+        	}
+        	else{
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
+        	}
+        }
         
         
         //Set Value Snippets
@@ -502,11 +520,13 @@ public class SCparser1 {
                     	Element eElement = (Element) nNode;
                     	System.out.println("Width : " + eElement.getAttribute("width"));
                     	
-                    	caux+= eElement.getAttribute("width")+",";
-                       	caux+= eElement.getAttribute("height")+")";
+                    	caux+= eElement.getAttribute("width").replace("px", "")+",";
+                       	caux+= eElement.getAttribute("height").replace("px", "")+")";
                 	}
                 	else {
                 		final BufferedImage bi = ImageIO.read(new File(workingDir + "/scratch/"+jsonCos.get("baseLayerID") + "."+formatFile));
+                		caux+= bi.getWidth()+",";
+                       	caux+= bi.getHeight()+")";
                 	}
                    	System.out.println(caux);
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
@@ -542,13 +562,24 @@ public class SCparser1 {
                 	Element eElement = (Element) nNode;
                 	System.out.println("Width : " + eElement.getAttribute("width"));
                 	
-                	caux+= eElement.getAttribute("width")+",";
-                   	caux+= eElement.getAttribute("height")+")";
+                	caux+= eElement.getAttribute("width").replace("px", "")+",";
+                   	caux+= eElement.getAttribute("height").replace("px", "")+")";
             	}
+               	
             	else {
+            		try {
+            			System.out.println(workingDir + "/scratch/"+jsonChild.get("baseLayerID") + "."+formatFile);
+            			Image picture = ImageIO.read(new File(workingDir + "/scratch/"+jsonChild.get("baseLayerID") + "."+formatFile));
+            	    } catch (IOException e) {
+            	    	e.printStackTrace();
+            	    }
+            		
             		final BufferedImage bi = ImageIO.read(new File(workingDir + "/scratch/"+jsonChild.get("baseLayerID") + "."+formatFile));
+            		caux+= bi.getWidth()+",";
+                   	caux+= bi.getHeight()+")";
             	}
-               	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listBackgrounds.costumes.add("+caux+");\n";
+            	
+               	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listBackgrounds.add("+caux+");\n";
             }
            
             
