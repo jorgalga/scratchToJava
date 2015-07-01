@@ -26,6 +26,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+
+
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -265,26 +267,51 @@ public class SCparser1 {
         if(ins.get(0).equals("say:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(ins.get(2).toString());
         	if(Globals.openControl){
-        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\" and I go to sleep);\n";
+        		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+" and I go to sleep\");\n";
         		s += "\t\t\ttry {\n";
         		s += "\t\t\t\tThread.sleep("+(auxv*1000)+");\n";
         		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
         	
         	}
         	else{
-        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\" and I go to sleep);\n";
+        		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+" and I go to sleep\");\n";
         		s += "\t\ttry {\n";
         		s += "\t\t\tThread.sleep("+(auxv*1000)+");\n";
         		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
         	}
         }
+        
         if(ins.get(0).equals("say:")){
-        	int auxv = Integer.parseInt(ins.get(2).toString());
         	if(Globals.openControl){
         		s += "\t\t\tSystem.out.println(\"I say: \""+ins.get(1)+"\");\n";
         	}
         	else{
         		s += "\t\tSystem.out.println(\"I say: "+ins.get(1)+"\");\n";
+        	}
+        }
+        if(ins.get(0).equals("think:duration:elapsed:from:")){
+        	int auxv = Integer.parseInt(ins.get(2).toString());
+        	if(Globals.openControl){
+        		s += "\t\t\tSystem.out.println(\"I think: \""+ins.get(1)+" and I go to sleep\");\n";
+        		s += "\t\t\ttry {\n";
+        		s += "\t\t\t\tThread.sleep("+(auxv*1000)+");\n";
+        		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	
+        	}
+        	else{
+        		s += "\t\tSystem.out.println(\"I think: "+ins.get(1)+" and I go to sleep\");\n";
+        		s += "\t\ttry {\n";
+        		s += "\t\t\tThread.sleep("+(auxv*1000)+");\n";
+        		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	}
+        }
+        
+        if(ins.get(0).equals("think:")){
+        	if(Globals.openControl){
+        		s += "\t\t\tSystem.out.println(\"I think: \""+ins.get(1)+"\");\n";
+        	}
+        	else{
+        		s += "\t\tSystem.out.println(\"I think: "+ins.get(1)+"\");\n";
         	}
         }
         
@@ -356,6 +383,10 @@ public class SCparser1 {
             System.out.println("Object Name: " + createDate);
             final JSONArray jsonChildren = (JSONArray) json.get("children");
             final Iterator it = jsonChildren.iterator();
+            
+            final JSONArray jsonBG = (JSONArray) json.get("costumes");
+            final Iterator it2 = jsonBG.iterator();
+            
             //Foreach Object in the Json File
             while (it.hasNext()) {
             	Globals.i_object++;
@@ -422,7 +453,7 @@ public class SCparser1 {
                             	Globals.openControl =  false;
                             	Globals.clevel--;
                             	bw.write ("\t\t\ttry {\n");
-                            	bw.write ("\t\t\t\tThread.sleep(1000);\n");
+                            	bw.write ("\t\t\t\tThread.sleep(1000/"+Globals.fps+");\n");
                             	bw.write ("\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n");
                             	bw.write ("\t\t}\n");
                             	bw.write ("\t\tGlobals.cucumberKey = false;\n");
@@ -477,12 +508,51 @@ public class SCparser1 {
                 	else {
                 		final BufferedImage bi = ImageIO.read(new File(workingDir + "/scratch/"+jsonCos.get("baseLayerID") + "."+formatFile));
                 	}
-                   	//System.out.println(caux);
+                   	System.out.println(caux);
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
                 }
                 
                 
             }//End Object iterator
+            //Reading the Backgrounds
+            while(it2.hasNext()){
+            	String caux = " ";
+             	String formatFile = "";
+            	JSONObject jsonChild = (JSONObject) it2.next();
+            	            	
+            	StringTokenizer st2 = new StringTokenizer((String) jsonChild.get("baseLayerMD5"),".");
+            	while (st2.hasMoreElements()) { formatFile = (String) st2.nextElement(); }
+            	
+            	caux = "new Costume(\"";
+               	caux+= (String) jsonChild.get("costumeName")+"\",";
+               	caux+= jsonChild.get("baseLayerID")+",";
+               	caux+= "\""+(String) jsonChild.get("baseLayerMD5")+"\",";
+               	caux+= jsonChild.get("bitmapResolution")+",";
+               	caux+= jsonChild.get("rotationCenterX")+",";
+               	caux+= jsonChild.get("rotationCenterY")+",";
+               	
+               	if(formatFile.equals("svg")){
+            		File fXmlFile = new File( workingDir + "/scratch/"+jsonChild.get("baseLayerID") + ".svg");
+                	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                	Document doc = dBuilder.parse(fXmlFile);
+                	
+                	NodeList nList = doc.getElementsByTagName("svg");
+                	Node nNode = nList.item(0);
+                	Element eElement = (Element) nNode;
+                	System.out.println("Width : " + eElement.getAttribute("width"));
+                	
+                	caux+= eElement.getAttribute("width")+",";
+                   	caux+= eElement.getAttribute("height")+")";
+            	}
+            	else {
+            		final BufferedImage bi = ImageIO.read(new File(workingDir + "/scratch/"+jsonChild.get("baseLayerID") + "."+formatFile));
+            	}
+               	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listBackgrounds.costumes.add("+caux+");\n";
+            }
+           
+            
+            
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -518,6 +588,7 @@ public class SCparser1 {
             bw.write(Globals.SCThreads_snippet);
             bw.write("\tpublic static App appT = new App();\n");
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
+            bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
             bw.write("}\n");  
             bw.close(); 
         }catch (IOException e){}
@@ -584,6 +655,7 @@ public class SCparser1 {
     }
 }
 class Globals{
+	public static int fps = 30;
 	public static boolean cucumberBuilt = true;
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
