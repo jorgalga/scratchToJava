@@ -28,8 +28,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 
-
-
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -332,6 +330,14 @@ public class SCparser1 {
         		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
         	}
         }
+        if(ins.get(0).equals("startScene")){
+        	if(Globals.openControl){
+        		
+        	}
+        	else{
+        		
+        	}
+        }
         
         
         //Set Value Snippets
@@ -354,6 +360,7 @@ public class SCparser1 {
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\telse{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
         }
+        
         return s;
     }
     public static void parseFile() {
@@ -620,6 +627,7 @@ public class SCparser1 {
             bw.write("\tpublic static App appT = new App();\n");
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
             bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
+            bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();");
             bw.write("}\n");  
             bw.close(); 
         }catch (IOException e){}
@@ -640,9 +648,11 @@ public class SCparser1 {
         	bw.write("\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n");
         	//The starting of the Threads is now controlled by the cucumber Step Definitions
         	//By default the construction is done by cucumber
-        	if(Globals.cucumberBuilt == false){bw.write(Globals.Listener_snippet);}
+        	bw.write(Globals.Listener_snippet);
         	
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
+        	bw.write("\t\t\tGlobals.appLaunched = true;\n");
+        	
         	bw.write("\t\t}\n");
         	
         	//Adding KeypressEvents
@@ -687,7 +697,7 @@ public class SCparser1 {
 }
 class Globals{
 	public static int fps = 30;
-	public static boolean cucumberBuilt = true;
+	
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
 	public static String MessageEvents_snippet = "";
