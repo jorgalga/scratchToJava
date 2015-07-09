@@ -85,6 +85,7 @@ class Thread_3 extends Thread {
 	}
 }
 class Globals {
+	public static boolean  appLaunched = false;
 	public static int steps ;
 	public static int wScreen = 480;
 	public static int hScreen = 360;
@@ -99,7 +100,7 @@ class Globals {
 	public static App appT = new App();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 	public static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();
-}
+	public static ArrayList<Thread> listScripts = new ArrayList <Thread>();}
 class MKeyListener extends KeyAdapter {
 	@Override public void keyPressed(KeyEvent event) {
 		char ch = event.getKeyChar();
@@ -107,6 +108,9 @@ class MKeyListener extends KeyAdapter {
 			Globals.loop = false;
 		}
 		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+			Globals.scThread_1.start();
+			Globals.scThread_2.start();
+			Globals.scThread_3.start();
 			Globals.cucumberKey = false;
 		}
 	}
@@ -133,5 +137,6 @@ class App extends Thread{
 		Globals.listBackgrounds.add(new Costume("underwater3",9,"be203c37c3ea07b39a5519d1a55214ff.gif",1,240,180,480,360));
 		Globals.listBackgrounds.add(new Costume("backdrop2",10,"f3912a1e36ffa0f64d22349466ba95dc.svg",1,243,182,481,360));
 		Globals.cucumberKey = false;
+		Globals.appLaunched = true;
 	}
 }

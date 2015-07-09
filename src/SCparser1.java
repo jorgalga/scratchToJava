@@ -62,6 +62,23 @@ public class SCparser1 {
 		
 	}
     
+	public static String evalExpression(JSONArray dataux){
+		String res;
+		if(dataux.get(0).equals("randomFrom:to:")){
+			res = "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n";
+		}else if(dataux.get(0).equals("+:")){
+			res = "Double steps = "+dataux.get(1)+" + "+dataux.get(2)+";\n";
+		}else if(dataux.get(0).equals("-")){
+			res = "Double steps = "+dataux.get(1)+" - "+dataux.get(2)+";\n";
+		}else if(dataux.get(0).equals("/")){
+			res = "Double steps = "+dataux.get(1)+" * "+dataux.get(2)+";\n";
+		}else if(dataux.get(0).equals("*")){
+			res = "Double steps = "+dataux.get(1)+" / "+dataux.get(2)+";\n";
+		}
+		
+		return " ";
+	}
+	
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
     	String s="";
         //Events Snippets
@@ -120,9 +137,8 @@ public class SCparser1 {
         		//There is an operator expresion
         		//System.out.println("Es JASONArray");
         		JSONArray dataux = (JSONArray) ins.get(1);
-        		if (dataux.get(0).equals("randomFrom:to:")){
-        			steps += "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n"; 
-        		}
+        		
+        		steps += evalExpression(dataux);
         	}
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
@@ -610,6 +626,7 @@ public class SCparser1 {
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             bw.write("class Globals {\n"); 
+            bw.write("\tpublic static boolean  appLaunched = false;\n");
             bw.write("\tpublic static int steps ;\n");
             bw.write("\tpublic static int wScreen = 480;\n");
             bw.write("\tpublic static int hScreen = 360;\n");
@@ -651,7 +668,7 @@ public class SCparser1 {
         	bw.write(Globals.Listener_snippet);
         	
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
-        	bw.write("\t\t\tGlobals.appLaunched = true;\n");
+        	
         	
         	bw.write("\t\t}\n");
         	
@@ -682,6 +699,7 @@ public class SCparser1 {
             bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
             bw.write(Globals.SCObjets_AddListSnippet);
             bw.write("\t\tGlobals.cucumberKey = false;\n");
+            bw.write("\t\tGlobals.appLaunched = true;\n");
             if(Globals.msgSending){bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");}
             bw.write("\t}\n");//Close run function
             bw.write("}\n");//Close App class
