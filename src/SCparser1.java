@@ -109,12 +109,12 @@ public class SCparser1 {
         //Events Snippets
     	if(ins.get(0).equals("whenKeyPressed")){
     		if(ins.get(1).equals("space")){
-    			Globals.KeyPress_snippet += "\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n" ;
-    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n;";
+    			Globals.KeyPress_snippet += "\t\tif (event.getKeyCode() == KeyEvent.VK_SPACE) {\n" ;
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     		else{
-    			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == \""+ins.get(1)+"\") {\n" ;
+    			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == '"+ins.get(1)+"') {\n" ;
     			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
@@ -151,34 +151,16 @@ public class SCparser1 {
         	}
         }
         if(ins.get(0).equals("forward:")){
-        	
-        	//String steps = "Double steps = Double.parseDouble("+ evalExpression(ins.get(1))  +");\n";
-        	
-        	String steps = evalExpression(ins.get(1));
-        	System.out.println(steps);
-        	//String steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
-        	/*if(ins.get(1) instanceof String || ins.get(1) instanceof Double || ins.get(1) instanceof Integer){
-        		//System.out.println("Es cadena");
-        		steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
-        	}
-        	else{
-        		//There is an operator expresion
-        		//System.out.println("Es JASONArray");
-        		JSONArray dataux = (JSONArray) ins.get(1);
-        		
-        		steps += evalExpression(dataux);
-        	}*/
+
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
-        		s += "\t\t\tDouble steps ="+steps+";\n";
-        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
-        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+" ;\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
         	}
         	else{
         		s += "\t\t//Move forward instruction\n";
-        		s += "\t\t"+steps;
-        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
-        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
             
         	}
         }
@@ -456,6 +438,12 @@ public class SCparser1 {
             final JSONArray jsonBG = (JSONArray) json.get("costumes");
             final Iterator it2 = jsonBG.iterator();
             
+            final JSONArray jsonSounds = (JSONArray) json.get("sounds");
+            final Iterator it3 = jsonSounds.iterator();
+            
+            final JSONArray jsonVar = (JSONArray) json.get("variables");
+            final Iterator it4 = jsonVar.iterator();
+            
             //Foreach Object in the Json File
             while (it.hasNext()) {
             	JSONObject jsonChild = (JSONObject) it.next();
@@ -635,7 +623,17 @@ public class SCparser1 {
             	
                	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listBackgrounds.add("+caux+");\n";
             }
-           
+            while(it4.hasNext()){
+            	JSONObject jsonChild = (JSONObject) it4.next();
+            	String caux = " ";
+            	caux = "new SCVariable(\"";
+            	caux+= (String) jsonChild.get("name")+"\",";
+            	caux+= "(double)"+jsonChild.get("value")+",";
+            	caux+= jsonChild.get("isPersistent")+")";
+            	
+            	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCVariables.add("+caux+");\n";
+            	
+            }
             
             
         }
@@ -673,6 +671,7 @@ public class SCparser1 {
             //bw.write(Globals.SCObjets_snippet);
             bw.write(Globals.SCThreads_snippet);
             bw.write("\tpublic static App appT = new App();\n");
+            bw.write("\tpublic static ArrayList<SCVariable> listSCVariables = new ArrayList<SCVariable>();\n");
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
             bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
             bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();");

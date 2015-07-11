@@ -20,25 +20,20 @@ class Thread_1 extends Thread {
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread1] - Step:"+i);}
 			//Move forward instruction
-			Double steps =(1 + Math.random()*3);
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(1 + Math.random()*3) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(1 + Math.random()*3)  ;
 			//Move forward instruction
-			Double steps =(1 + 1);
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(1 + 1) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(1 + 1)  ;
 			//Move forward instruction
-			Double steps =(2 - 1);
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(2 - 1) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(2 - 1)  ;
 			//Move forward instruction
-			Double steps =(3 / 2);
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(3 / 2) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(3 / 2)  ;
 			//Move forward instruction
-			Double steps =( * );
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*( * ) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*( * )  ;
 			//Turn right instruction
 			Globals.listSCObjects.get(0).direction = Globals.listSCObjects.get(0).direction + 15;
 			if(Globals.listSCObjects.get(0).direction >= 180){Globals.listSCObjects.get(0).direction = -180 + (Globals.listSCObjects.get(0).direction-180);}
@@ -142,6 +137,7 @@ class Globals {
 	public static Thread_7 scThread_7 = new Thread_7();
 	public static Thread_8 scThread_8 = new Thread_8();
 	public static App appT = new App();
+	public static ArrayList<SCVariable> listSCVariables = new ArrayList<SCVariable>();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 	public static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();
 	public static ArrayList<Thread> listScripts = new ArrayList <Thread>();}
@@ -156,18 +152,18 @@ class MKeyListener extends KeyAdapter {
 			Globals.scThread_2.start();
 			Globals.cucumberKey = false;
 		}
-		if (event.getKeyChar() == "a") {
+		if (event.getKeyChar() == 'a') {
 			Globals.scThread_3.start();
 		}
-		if (event.getKeyChar() == "s") {
+		if (event.getKeyChar() == 's') {
 			Globals.scThread_6.start();
 		}
-		if (event.getKeyChar() == "k") {
+		if (event.getKeyChar() == 'k') {
 			Globals.scThread_7.start();
 		}
-		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+		if (event.getKeyCode() == KeyEvent.VK_SPACE) {
 			Globals.scThread_8.start();
-;		}
+		}
 	}
 }
 class App extends Thread{
@@ -191,6 +187,8 @@ class App extends Thread{
 		Globals.listBackgrounds.add(new Costume("backdrop1",8,"510da64cf172d53750dffd23fbf73563.png",1,240,180,480,360));
 		Globals.listBackgrounds.add(new Costume("underwater3",9,"be203c37c3ea07b39a5519d1a55214ff.gif",1,240,180,480,360));
 		Globals.listBackgrounds.add(new Costume("backdrop2",10,"f3912a1e36ffa0f64d22349466ba95dc.svg",1,243,182,481,360));
+		Globals.listSCVariables.add(new SCVariable("test",(double)4,false));
+		Globals.listSCVariables.add(new SCVariable("test2",(double)7,false));
 		Globals.cucumberKey = false;
 		Globals.appLaunched = true;
 		Globals.initiater.addListener(Globals.responder);
