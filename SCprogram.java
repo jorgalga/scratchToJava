@@ -32,8 +32,8 @@ class Thread_1 extends Thread {
 			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(3 / 2) ;
 			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(3 / 2)  ;
 			//Move forward instruction
-			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*( * ) ;
-			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*( * )  ;
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(Globals.getSCValueByName("test") * Globals.getSCValueByName("test2")) ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*(Globals.getSCValueByName("test") * Globals.getSCValueByName("test2"))  ;
 			//Turn right instruction
 			Globals.listSCObjects.get(0).direction = Globals.listSCObjects.get(0).direction + 15;
 			if(Globals.listSCObjects.get(0).direction >= 180){Globals.listSCObjects.get(0).direction = -180 + (Globals.listSCObjects.get(0).direction-180);}
@@ -140,7 +140,15 @@ class Globals {
 	public static ArrayList<SCVariable> listSCVariables = new ArrayList<SCVariable>();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 	public static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();
-	public static ArrayList<Thread> listScripts = new ArrayList <Thread>();}
+	public static ArrayList<Thread> listScripts = new ArrayList <Thread>();
+	public static double getSCValueByName(String id){
+		double res=-999999;
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+			if(Globals.listSCVariables.get(i).name.equals(id)){res = Globals.listSCVariables.get(i).value;}
+		}
+		return res;
+	}
+}
 class MKeyListener extends KeyAdapter {
 	@Override public void keyPressed(KeyEvent event) {
 		char ch = event.getKeyChar();

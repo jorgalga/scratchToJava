@@ -63,22 +63,6 @@ public class SCparser1 {
     
 	public static String evalExpression(Object dataux){
 		
-		/*
-		if(dataux.get(0).equals("randomFrom:to:")){
-			res = "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n";
-		}else if(dataux.get(0).equals("+:")){
-			res = "Double steps = "+dataux.get(1)+" + "+dataux.get(2)+";\n";
-		}else if(dataux.get(0).equals("-")){
-			res = "Double steps = "+dataux.get(1)+" - "+dataux.get(2)+";\n";
-		}else if(dataux.get(0).equals("/")){
-			res = "Double steps = "+dataux.get(1)+" * "+dataux.get(2)+";\n";
-		}else if(dataux.get(0).equals("*")){
-			res = "Double steps = "+dataux.get(1)+" / "+dataux.get(2)+";\n";
-		}
-		
-		return res;
-		*/
-		
 		System.out.println(dataux.getClass());
 		if(dataux instanceof String || dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
 			System.out.println("el: "+dataux.toString());
@@ -99,6 +83,8 @@ public class SCparser1 {
 				return  "("+ evalExpression(dataux2.get(1)) +" * "+ evalExpression(dataux2.get(2))+")"; 
 			}else if(dataux2.get(0).equals("/")){
 				return  "("+ evalExpression(dataux2.get(1)) +" / "+ evalExpression(dataux2.get(2))+")"; 
+			}else if(dataux2.get(0).equals("readVariable")){
+				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
 			}
 		}
 		return"";
@@ -674,7 +660,18 @@ public class SCparser1 {
             bw.write("\tpublic static ArrayList<SCVariable> listSCVariables = new ArrayList<SCVariable>();\n");
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
             bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
-            bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();");
+            bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();\n");
+            
+            bw.write("\tpublic static double getSCValueByName(String id){\n");
+            bw.write("\t\tdouble res=-999999;\n");
+            bw.write("\t\tfor(int i=0;i< Globals.listSCVariables.size();i++){\n");
+            bw.write("\t\t\tif(Globals.listSCVariables.get(i).name.equals(id)){res = Globals.listSCVariables.get(i).value;}\n");
+            bw.write("\t\t}\n");
+            bw.write("\t\treturn res;\n");
+            bw.write("\t}\n");
+            
+            
+            
             bw.write("}\n");  
             bw.close(); 
         }catch (IOException e){}
