@@ -27,7 +27,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -62,8 +61,9 @@ public class SCparser1 {
 		
 	}
     
-	public static String evalExpression(JSONArray dataux){
-		String res;
+	public static String evalExpression(Object dataux){
+		
+		/*
 		if(dataux.get(0).equals("randomFrom:to:")){
 			res = "Double steps = "+dataux.get(1)+" + Math.random()*"+dataux.get(2)+";\n";
 		}else if(dataux.get(0).equals("+:")){
@@ -76,7 +76,32 @@ public class SCparser1 {
 			res = "Double steps = "+dataux.get(1)+" / "+dataux.get(2)+";\n";
 		}
 		
-		return " ";
+		return res;
+		*/
+		
+		System.out.println(dataux.getClass());
+		if(dataux instanceof String || dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
+			System.out.println("el: "+dataux.toString());
+			return dataux.toString();
+		}
+		else
+		{
+			System.out.println(dataux);
+			JSONArray dataux2 = (JSONArray) dataux;
+			System.out.println("el: "+dataux2.get(0));
+			if(dataux2.get(0).equals("randomFrom:to:")){
+				return  "("+ evalExpression(dataux2.get(1)) +" + Math.random()*"+ evalExpression(dataux2.get(2))+")"; 
+			}else if(dataux2.get(0).equals("+")){
+				return  "("+ evalExpression(dataux2.get(1)) +" + "+ evalExpression(dataux2.get(2))+")"; 
+			}else if(dataux2.get(0).equals("-")){
+				return  "("+ evalExpression(dataux2.get(1)) +" - "+ evalExpression(dataux2.get(2))+")"; 
+			}else if(dataux2.get(0).equals("*")){
+				return  "("+ evalExpression(dataux2.get(1)) +" * "+ evalExpression(dataux2.get(2))+")"; 
+			}else if(dataux2.get(0).equals("/")){
+				return  "("+ evalExpression(dataux2.get(1)) +" / "+ evalExpression(dataux2.get(2))+")"; 
+			}
+		}
+		return"";
 	}
 	
     public static String evalInstruct(JSONArray ins, int numthread, int numObject) {
@@ -90,7 +115,7 @@ public class SCparser1 {
     		}
     		else{
     			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == \""+ins.get(1)+"\") {\n" ;
-    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n;";
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     	}
@@ -127,9 +152,12 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("forward:")){
         	
-        	String steps = "";
+        	//String steps = "Double steps = Double.parseDouble("+ evalExpression(ins.get(1))  +");\n";
         	
-        	if(ins.get(1) instanceof String || ins.get(1) instanceof Double || ins.get(1) instanceof Integer){
+        	String steps = evalExpression(ins.get(1));
+        	System.out.println(steps);
+        	//String steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
+        	/*if(ins.get(1) instanceof String || ins.get(1) instanceof Double || ins.get(1) instanceof Integer){
         		//System.out.println("Es cadena");
         		steps = "Double steps = Double.parseDouble((String)ins.get(1));\n";
         	}
@@ -139,10 +167,10 @@ public class SCparser1 {
         		JSONArray dataux = (JSONArray) ins.get(1);
         		
         		steps += evalExpression(dataux);
-        	}
+        	}*/
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
-        		s += "\t\t\t"+steps;
+        		s += "\t\t\tDouble steps ="+steps+";\n";
         		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
         		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*steps ;\n";
         	}
@@ -430,10 +458,13 @@ public class SCparser1 {
             
             //Foreach Object in the Json File
             while (it.hasNext()) {
+            	JSONObject jsonChild = (JSONObject) it.next();
+            	if((String) jsonChild.get("objName")!=null){
+            	
             	Globals.i_object++;
                 System.out.println("[NEW CHILD]");
                 //Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
-                JSONObject jsonChild = (JSONObject) it.next();
+                
                 String objName = (String) jsonChild.get("objName");
                 Object cci = jsonChild.get("currentCostumeIndex");
                 Object sx = jsonChild.get("scratchX");
@@ -555,7 +586,7 @@ public class SCparser1 {
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
                 }
                 
-                
+            	}//En comparision for parsin only SCObjects
             }//End Object iterator
             //Reading the Backgrounds
             while(it2.hasNext()){

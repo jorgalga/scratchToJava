@@ -20,7 +20,23 @@ class Thread_1 extends Thread {
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread1] - Step:"+i);}
 			//Move forward instruction
-			Double steps = 1 + Math.random()*3;
+			Double steps =(1 + Math.random()*3);
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			//Move forward instruction
+			Double steps =(1 + 1);
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			//Move forward instruction
+			Double steps =(2 - 1);
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			//Move forward instruction
+			Double steps =(3 / 2);
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
+			//Move forward instruction
+			Double steps =( * );
 			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
 			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*steps ;
 			//Turn right instruction
@@ -58,12 +74,10 @@ class Thread_1 extends Thread {
 }
 class Thread_2 extends Thread {
 	public void run(){
-		Globals.listSCObjects.get(0).setCostumebyID("starter crab");
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread2] - Step:"+i);}
-			Globals.listSCObjects.get(0).nextCostume();
 			try {
 				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -73,15 +87,38 @@ class Thread_2 extends Thread {
 }
 class Thread_3 extends Thread {
 	public void run(){
+	}
+}
+class Thread_4 extends Thread {
+	public void run(){
+	}
+}
+class Thread_5 extends Thread {
+	public void run(){
+	}
+}
+class Thread_6 extends Thread {
+	public void run(){
+		Globals.initiater.TriggerMessage("message1");
+	}
+}
+class Thread_7 extends Thread {
+	public void run(){
+		Globals.listSCObjects.get(0).setCostumebyID("starter crab");
 		//Do-forever instruction
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
-			else{System.out.println("[Thread3] - Step:"+i);}
+			else{System.out.println("[Thread7] - Step:"+i);}
+			Globals.listSCObjects.get(0).nextCostume();
 			try {
 				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		Globals.cucumberKey = false;
+	}
+}
+class Thread_8 extends Thread {
+	public void run(){
 	}
 }
 class Globals {
@@ -94,9 +131,16 @@ class Globals {
 	public static boolean loop = true;
 	public static long total_timeApp = 0;
 	public static long timeApp = System.currentTimeMillis();
+	public static Initiater initiater = new Initiater();
+	public static Responder responder = new Responder();
 	public static Thread_1 scThread_1 = new Thread_1();
 	public static Thread_2 scThread_2 = new Thread_2();
 	public static Thread_3 scThread_3 = new Thread_3();
+	public static Thread_4 scThread_4 = new Thread_4();
+	public static Thread_5 scThread_5 = new Thread_5();
+	public static Thread_6 scThread_6 = new Thread_6();
+	public static Thread_7 scThread_7 = new Thread_7();
+	public static Thread_8 scThread_8 = new Thread_8();
 	public static App appT = new App();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
 	public static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();
@@ -110,9 +154,20 @@ class MKeyListener extends KeyAdapter {
 		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 			Globals.scThread_1.start();
 			Globals.scThread_2.start();
-			Globals.scThread_3.start();
 			Globals.cucumberKey = false;
 		}
+		if (event.getKeyChar() == "a") {
+			Globals.scThread_3.start();
+		}
+		if (event.getKeyChar() == "s") {
+			Globals.scThread_6.start();
+		}
+		if (event.getKeyChar() == "k") {
+			Globals.scThread_7.start();
+		}
+		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+			Globals.scThread_8.start();
+;		}
 	}
 }
 class App extends Thread{
@@ -125,7 +180,7 @@ class App extends Thread{
 		jframe.setSize(400, 400);
 		jframe.setVisible(true);
 		//Filling the ArrayListwith the SCobjects
-		Globals.listSCObjects.add(new SCObject("Crab",0,14.61084719307128,7.11707852528936,-153.47114057941724,"none",false,1,true,1));
+		Globals.listSCObjects.add(new SCObject("Crab",6,-18.616317338039362,87.70599367668504,26.332541515676667,"none",false,1,true,1));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("starter crab",1,"61dd4003375099d6aaf36336bd1b1ec9.svg",1,240,106,348,235));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("crab legs",2,"2e24ee5d950c8f711bcb746201cb1972.svg",1,240,105,348,237));
 		Globals.listSCObjects.get(0).costumes.add(new Costume("cheerful crab",3,"08bc5cea610a0ca84a06d7900303ea77.svg",1,242,109,348,235));
@@ -138,5 +193,23 @@ class App extends Thread{
 		Globals.listBackgrounds.add(new Costume("backdrop2",10,"f3912a1e36ffa0f64d22349466ba95dc.svg",1,243,182,481,360));
 		Globals.cucumberKey = false;
 		Globals.appLaunched = true;
+		Globals.initiater.addListener(Globals.responder);
+	}
+}
+interface messageListener { void receptorEvent(String msg);}
+class Initiater {
+	private ArrayList<messageListener> listeners = new ArrayList<messageListener>(); 
+	public void addListener(messageListener toAdd) {
+		listeners.add(toAdd);
+	}
+	public void TriggerMessage(String msg) {
+		for (messageListener hl : listeners)
+			hl.receptorEvent(msg);
+	}
+}
+class Responder implements messageListener {
+	@Override
+	public void receptorEvent(String msg) {
+		if(msg.equals("message1")){Globals.scThread_5.start();}
 	}
 }
