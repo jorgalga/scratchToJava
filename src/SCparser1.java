@@ -414,6 +414,47 @@ public class SCparser1 {
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\telse{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
         }
+        if(ins.get(0).equals("doWaitUntil")){
+        	String operator="";
+        	JSONArray iaux = (JSONArray) ins.get(1);
+        	if(iaux.get(0).equals("=")){
+        		operator = "!=";
+        	}else if(iaux.get(0).equals("<")){
+        		operator = ">";
+        	}else if(iaux.get(0).equals(">")){
+        		operator = "<";
+        	}
+        	
+        	s+=duplicateString("\t", Globals.clevel + 2)+"//Do-wait-until instruction\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"while("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n";
+        	Globals.clevel++;
+        	s+=duplicateString("\t", Globals.clevel + 2)+"try {\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"Thread.sleep(1000/"+Globals.fps+");\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	Globals.clevel--;
+        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        }
+        if(ins.get(0).equals("doIf")){
+        	String operator="";
+        	JSONArray iaux = (JSONArray) ins.get(1);
+        	if(iaux.get(0).equals("=")){
+        		operator = "==";
+        	}else if(iaux.get(0).equals("<")){
+        		operator = "<";
+        	}else if(iaux.get(0).equals(">")){
+        		operator = ">";
+        	}
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n" ;
+        	Globals.clevel++;
+        	JSONArray bloqIns = (JSONArray) ins.get(2);
+        	for(int i=0; i < bloqIns.size() ; i++ ){
+        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+        		s+= evalInstruct(iaux2,numthread, numObject);
+        	}
+        	Globals.clevel--;
+        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        }
         
         if(ins.get(0).equals("doIfElse")){
         	String operator="";
@@ -431,7 +472,7 @@ public class SCparser1 {
         	JSONArray bloqIns = (JSONArray) ins.get(2);
         	for(int i=0; i < bloqIns.size() ; i++ ){
         		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= duplicateString("\t", Globals.clevel + 2) + evalInstruct(iaux2,numthread, numObject);
+        		s+= evalInstruct(iaux2,numthread, numObject);
         	}
         	Globals.clevel--;
         	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
@@ -440,7 +481,7 @@ public class SCparser1 {
         	bloqIns = (JSONArray) ins.get(3);
         	for(int i=0; i < bloqIns.size() ; i++ ){
         		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= duplicateString("\t", Globals.clevel + 2) + evalInstruct(iaux2,numthread, numObject);
+        		s+= evalInstruct(iaux2,numthread, numObject);
         	}
         	Globals.clevel--;
         	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";

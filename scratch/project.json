@@ -82,7 +82,7 @@
 					104,
 					[["whenKeyPressed", "space"],
 						["doIf",
-							["<", "1", ["readVariable", "test"]],
+							["<", "2.2", ["readVariable", "test"]],
 							[["doPlaySoundAndWait", "human beatbox1"], ["doWaitUntil", ["=", ["readVariable", "test"], ["readVariable", "test2"]]]]]]]],
 			"scriptComments": [[230, 257, 137, 65, true, 8, "Switch between costumes"],
 				[297, 414, 133, 54, true, 13, "Play music"],

@@ -96,13 +96,13 @@ class Thread_4 extends Thread {
 	public void run(){
 		//Do-if-else instruction
 		if(Globals.listSCObjects.get(0).currentCostume == Globals.getSCValueByName("test") ){
-						//Play sound and wait instruction
+			//Play sound and wait instruction
 			try {
 				Thread.sleep(Globals.getDurationByName("grabación1"));
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		else{
-						//Add value to a Variable by name
+			//Add value to a Variable by name
 			for(int i=0;i< Globals.listSCVariables.size();i++){
 				if(Globals.listSCVariables.get(i).name.equals("test2")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)1; }
 			}
@@ -139,6 +139,19 @@ class Thread_7 extends Thread {
 }
 class Thread_8 extends Thread {
 	public void run(){
+		//Do-if instruction
+		if(2.2 < Globals.getSCValueByName("test") ){
+			//Play sound and wait instruction
+			try {
+				Thread.sleep(Globals.getDurationByName("human beatbox1"));
+			} catch (InterruptedException e) {e.printStackTrace();}
+			//Do-wait-until instruction
+			while(Globals.getSCValueByName("test") != Globals.getSCValueByName("test2") ){
+				try {
+				Thread.sleep(1000/30);
+				} catch (InterruptedException e) {e.printStackTrace();}
+			}
+		}
 	}
 }
 class Globals {
