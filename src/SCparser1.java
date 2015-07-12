@@ -351,8 +351,38 @@ public class SCparser1 {
         		
         	}
         }
+        //Sound Snippets
+        if(ins.get(0).equals("doPlaySoundAndWait")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Play sound and wait instruction\n";
+        		s += "\t\t\ttry {\n";
+        		s += "\t\t\t\tThread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
+        		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	}
+        	else{
+        		s += "\t\t//Play sound and wait instruction\n";
+        		s += "\t\ttry {\n";
+        		s += "\t\t\tThread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
+        		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	}
+        		
         
-        
+        }
+        //Data Variable Snippets
+        if(ins.get(0).equals("setVar:to:")){
+        	if(Globals.openControl){
+        		s += "\t\t\t//Set Variable to a value\n";
+        		s +="\t\t\tfor(int i=0;i< Globals.listSCVariables.size();i++){\n";
+        		s +="\t\t\tif(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){ Globals.listSCVariables.get(i).value = (double)"+ins.get(2)+"; }\n";
+        		s +="\t\t\t}\n";
+        	}
+        	else{
+        		s +="\t\t//Set Variable to a value\n";
+        		s +="\t\tfor(int i=0;i< Globals.listSCVariables.size();i++){\n";
+        		s +="\t\tif(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).value = (double)"+ins.get(2)+"; }\n";
+        		s +="\t\t}\n";
+        	}
+        }
         //Set Value Snippets
         if(ins.get(0).equals("setRotationStyle")){
         	if(Globals.openControl){
@@ -779,7 +809,7 @@ public class SCparser1 {
 }
 class Globals{
 	public static int fps = 30;
-	
+	public static int deep_level=0;
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
 	public static String MessageEvents_snippet = "";

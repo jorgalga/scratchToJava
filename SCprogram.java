@@ -73,6 +73,10 @@ class Thread_2 extends Thread {
 		for(int i=0; i < Globals.steps; i++){
 			if(Globals.infloop == true){i--;}//i does not increment
 			else{System.out.println("[Thread2] - Step:"+i);}
+			//Play sound and wait instruction
+			try {
+				Thread.sleep(Globals.getDurationByName("human beatbox1"));
+			} catch (InterruptedException e) {e.printStackTrace();}
 			try {
 				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -82,6 +86,10 @@ class Thread_2 extends Thread {
 }
 class Thread_3 extends Thread {
 	public void run(){
+		//Set Variable to a value
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+		if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = (double)0; }
+		}
 	}
 }
 class Thread_4 extends Thread {
@@ -146,6 +154,13 @@ class Globals {
 		double res=-999999;
 		for(int i=0;i< Globals.listSCVariables.size();i++){
 			if(Globals.listSCVariables.get(i).name.equals(id)){res = Globals.listSCVariables.get(i).value;}
+		}
+		return res;
+	}
+	public static int getDurationByName(String id){
+		int res =0;
+		for(int i=0;i<Globals.listSCSounds.size();i++){
+			if(Globals.listSCSounds.get(i).soundName.equals(id)){res = Globals.listSCSounds.get(i).duration; }
 		}
 		return res;
 	}
