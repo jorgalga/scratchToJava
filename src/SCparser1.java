@@ -41,6 +41,13 @@ public class SCparser1 {
 	public static void main(String[] args) {
         parseFile();
 	}
+	public static String duplicateString(String s, int n){
+		String res="";
+		for(int i=0;i<n;i++){
+			res += s;
+		}
+		return res;
+	}
 	public static void initMsgSnippet(){
 		
 		
@@ -402,6 +409,14 @@ public class SCparser1 {
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
         	s+= "\t\t\telse{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
+        }
+        
+        if(ins.get(0).equals("doIfElse")){
+        	//s+= StringUtils.repeat("\t", Globals.clevel + 2);
+        	//s += StringUtils.repeat(str, 3) "//Do-if-else instruction\n";
+        	s += "";
+        	
+        	//evalInstruct()
         }
         
         return s;
@@ -809,7 +824,7 @@ public class SCparser1 {
 }
 class Globals{
 	public static int fps = 30;
-	public static int deep_level=0;
+	
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
 	public static String MessageEvents_snippet = "";
