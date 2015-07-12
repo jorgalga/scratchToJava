@@ -69,7 +69,7 @@ public class SCparser1 {
 		
 	}
     
-	public static String evalExpression(Object dataux){
+	public static String evalExpression(Object dataux,  int numObject){
 		
 		System.out.println(dataux.getClass());
 		if(dataux instanceof String || dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
@@ -82,17 +82,19 @@ public class SCparser1 {
 			JSONArray dataux2 = (JSONArray) dataux;
 			System.out.println("el: "+dataux2.get(0));
 			if(dataux2.get(0).equals("randomFrom:to:")){
-				return  "("+ evalExpression(dataux2.get(1)) +" + Math.random()*"+ evalExpression(dataux2.get(2))+")"; 
+				return  "("+ evalExpression(dataux2.get(1),numObject) +" + Math.random()*"+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("+")){
-				return  "("+ evalExpression(dataux2.get(1)) +" + "+ evalExpression(dataux2.get(2))+")"; 
+				return  "("+ evalExpression(dataux2.get(1),numObject) +" + "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("-")){
-				return  "("+ evalExpression(dataux2.get(1)) +" - "+ evalExpression(dataux2.get(2))+")"; 
+				return  "("+ evalExpression(dataux2.get(1),numObject) +" - "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("*")){
-				return  "("+ evalExpression(dataux2.get(1)) +" * "+ evalExpression(dataux2.get(2))+")"; 
+				return  "("+ evalExpression(dataux2.get(1),numObject) +" * "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("/")){
-				return  "("+ evalExpression(dataux2.get(1)) +" / "+ evalExpression(dataux2.get(2))+")"; 
+				return  "("+ evalExpression(dataux2.get(1),numObject) +" / "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("readVariable")){
 				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
+			}else if(dataux2.get(0).equals("costumeIndex")){
+				return "Globals.listSCObjects.get("+(numObject-1)+").currentCostume";
 			}
 		}
 		return"";
@@ -148,13 +150,13 @@ public class SCparser1 {
 
         	if(Globals.openControl){
         		s += "\t\t\t//Move forward instruction\n";
-        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+" ;\n";
-        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+" ;\n";
+        		s += "\t\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+"  ;\n";
         	}
         	else{
         		s += "\t\t//Move forward instruction\n";
-        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
-        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1))+"  ;\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+"  ;\n";
+        		s += "\t\tGlobals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+"  ;\n";
             
         	}
         }
@@ -360,20 +362,12 @@ public class SCparser1 {
         }
         //Sound Snippets
         if(ins.get(0).equals("doPlaySoundAndWait")){
-        	if(Globals.openControl){
-        		s += "\t\t\t//Play sound and wait instruction\n";
-        		s += "\t\t\ttry {\n";
-        		s += "\t\t\t\tThread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
-        		s += "\t\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
-        	}
-        	else{
-        		s += "\t\t//Play sound and wait instruction\n";
-        		s += "\t\ttry {\n";
-        		s += "\t\t\tThread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
-        		s += "\t\t} catch (InterruptedException e) {e.printStackTrace();}\n";
-        	}
-        		
-        
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Play sound and wait instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
+        	Globals.clevel++;
+        	s += duplicateString("\t", Globals.clevel + 2)+"Thread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
+        	Globals.clevel--;
+        	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         //Data Variable Snippets
         if(ins.get(0).equals("setVar:to:")){
@@ -386,10 +380,20 @@ public class SCparser1 {
         	else{
         		s +="\t\t//Set Variable to a value\n";
         		s +="\t\tfor(int i=0;i< Globals.listSCVariables.size();i++){\n";
-        		s +="\t\tif(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).value = (double)"+ins.get(2)+"; }\n";
+        		s +="\t\t\tif(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).value = (double)"+ins.get(2)+"; }\n";
         		s +="\t\t}\n";
         	}
         }
+        if(ins.get(0).equals("changeVar:by:")){
+        	System.out.println("Entro aca pive");
+        	s+= duplicateString("\t",Globals.clevel+2)+"//Add value to a Variable by name\n";
+        	s+= duplicateString("\t",Globals.clevel+2)+"for(int i=0;i< Globals.listSCVariables.size();i++){\n";
+        	Globals.clevel++;
+        	s+= duplicateString("\t",Globals.clevel+2)+"if(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)"+ins.get(2)+"; }\n";
+        	Globals.clevel--;
+        	s+= duplicateString("\t",Globals.clevel+2)+"}\n";
+        }
+        
         //Set Value Snippets
         if(ins.get(0).equals("setRotationStyle")){
         	if(Globals.openControl){
@@ -412,11 +416,36 @@ public class SCparser1 {
         }
         
         if(ins.get(0).equals("doIfElse")){
-        	//s+= StringUtils.repeat("\t", Globals.clevel + 2);
-        	//s += StringUtils.repeat(str, 3) "//Do-if-else instruction\n";
-        	s += "";
+        	String operator="";
+        	JSONArray iaux = (JSONArray) ins.get(1);
+        	if(iaux.get(0).equals("=")){
+        		operator = "==";
+        	}else if(iaux.get(0).equals("<")){
+        		operator = "<";
+        	}else if(iaux.get(0).equals(">")){
+        		operator = ">";
+        	}
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if-else instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n" ;
+        	Globals.clevel++;
+        	JSONArray bloqIns = (JSONArray) ins.get(2);
+        	for(int i=0; i < bloqIns.size() ; i++ ){
+        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+        		s+= duplicateString("\t", Globals.clevel + 2) + evalInstruct(iaux2,numthread, numObject);
+        	}
+        	Globals.clevel--;
+        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        	s+= duplicateString("\t", Globals.clevel + 2) +"else{\n";
+        	Globals.clevel++;
+        	bloqIns = (JSONArray) ins.get(3);
+        	for(int i=0; i < bloqIns.size() ; i++ ){
+        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+        		s+= duplicateString("\t", Globals.clevel + 2) + evalInstruct(iaux2,numthread, numObject);
+        	}
+        	Globals.clevel--;
+        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
         	
-        	//evalInstruct()
+        	//
         }
         
         return s;

@@ -88,16 +88,33 @@ class Thread_3 extends Thread {
 	public void run(){
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = (double)0; }
+			if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = (double)0; }
 		}
 	}
 }
 class Thread_4 extends Thread {
 	public void run(){
+		//Do-if-else instruction
+		if(Globals.listSCObjects.get(0).currentCostume == Globals.getSCValueByName("test") ){
+						//Play sound and wait instruction
+			try {
+				Thread.sleep(Globals.getDurationByName("grabación1"));
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		else{
+						//Add value to a Variable by name
+			for(int i=0;i< Globals.listSCVariables.size();i++){
+				if(Globals.listSCVariables.get(i).name.equals("test2")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)1; }
+			}
+		}
 	}
 }
 class Thread_5 extends Thread {
 	public void run(){
+		//Add value to a Variable by name
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+			if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)1; }
+		}
 	}
 }
 class Thread_6 extends Thread {
