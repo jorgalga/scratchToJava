@@ -27,6 +27,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -423,10 +424,10 @@ public class SCparser1 {
             
             final JSONArray jsonBG = (JSONArray) json.get("costumes");
             final Iterator it2 = jsonBG.iterator();
-            
+            /*
             final JSONArray jsonSounds = (JSONArray) json.get("sounds");
             final Iterator it3 = jsonSounds.iterator();
-            
+            */
             final JSONArray jsonVar = (JSONArray) json.get("variables");
             final Iterator it4 = jsonVar.iterator();
             
@@ -557,11 +558,37 @@ public class SCparser1 {
                        	caux+= bi.getHeight()+")";
                 	}
                    	System.out.println(caux);
+                   	
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").costumes.add("+caux+");\n";
                 }
+                JSONArray jsonSounds = (JSONArray) jsonChild.get("sounds");
+                JSONObject jsonSon;
+                for(int i = 0 ; i < jsonSounds.size() ; i++){
+                	if(Globals.soundsParsing==false){
+                   		Globals.soundsParsing = true;
+                   		Globals.SCObjets_AddListSnippet +="\t\ttry{\n";
+                   	}
+                	
+                	caux ="";
+                	jsonSon = (JSONObject) jsonSounds.get(i);
+                	caux ="new SCSound(\"";
+                	caux += (String) jsonSon.get("soundName")+"\",";
+                	caux += jsonSon.get("soundID") + ",";
+                	caux += "\""+(String) jsonSon.get("md5")+"\",";
+                	caux += jsonSon.get("sampleCount") + ",";
+                	caux += jsonSon.get("rate") + ",";
+                	caux += "\""+(String) jsonSon.get("format")+"\",";
+                	caux += "\""+ workingDir + "/scratch/" +"\")";
+                	
+                	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCSounds.add("+caux+");\n";
+                }
+                
                 
             	}//En comparision for parsin only SCObjects
             }//End Object iterator
+            if(Globals.soundsParsing == true){
+            	Globals.SCObjets_AddListSnippet += "\t\t}catch(Exception e){}\n";
+            }
             //Reading the Backgrounds
             while(it2.hasNext()){
             	String caux = " ";
@@ -661,7 +688,8 @@ public class SCparser1 {
             bw.write("\tpublic static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();\n");
             bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
             bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();\n");
-            
+            bw.write("\tpublic static ArrayList<SCSound> listSCSounds = new ArrayList <SCSound>();\n");
+            //Global functions
             bw.write("\tpublic static double getSCValueByName(String id){\n");
             bw.write("\t\tdouble res=-999999;\n");
             bw.write("\t\tfor(int i=0;i< Globals.listSCVariables.size();i++){\n");
@@ -669,6 +697,15 @@ public class SCparser1 {
             bw.write("\t\t}\n");
             bw.write("\t\treturn res;\n");
             bw.write("\t}\n");
+            
+            bw.write("\tpublic static int getDurationByName(String id){\n");
+            bw.write("\t\tint res =0;\n");
+            bw.write("\t\tfor(int i=0;i<Globals.listSCSounds.size();i++){\n");
+            bw.write("\t\t\tif(Globals.listSCSounds.get(i).soundName.equals(id)){res = Globals.listSCSounds.get(i).duration; }\n");
+            bw.write("\t\t}\n");
+            bw.write("\t\treturn res;\n");
+            bw.write("\t}\n");
+            
             
             
             
@@ -752,6 +789,7 @@ class Globals{
 	public static String Listener_snippet = "";
 	public static String KeyPress_snippet = "";
 	public static int clevel = 0;
+	public static boolean soundsParsing = false;
 	public static boolean openControl = false;
 	public static boolean msgSending = false;
 }
