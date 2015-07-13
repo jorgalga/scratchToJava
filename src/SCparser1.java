@@ -274,9 +274,13 @@ public class SCparser1 {
         	s+=duplicateString("\t", Globals.clevel + 2)+"//Do-forever instruction\n";
         	s+=duplicateString("\t", Globals.clevel + 2)+"for(int i=0; i < Globals.steps; i++){\n";
         	Globals.clevel++;
-        	s+=duplicateString("\t", Globals.clevel + 2)+"if(Globals.infloop == true){i--;}//i does not increment\n";
-        	s+=duplicateString("\t", Globals.clevel + 2)+"else{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
-        	
+        	if(Globals.clevel <= 1){
+        		s+=duplicateString("\t", Globals.clevel + 2)+"if(Globals.infloop == true){i--;}//i does not increment\n";
+        		s+=duplicateString("\t", Globals.clevel + 2)+"else{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
+        	}else{
+        		s+=duplicateString("\t", Globals.clevel + 2)+"i--;//i never increments \n";
+        	}
+        		
         	JSONArray bloqIns = (JSONArray) ins.get(1);
         	for(int i=0; i < bloqIns.size() ; i++ ){
         		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
