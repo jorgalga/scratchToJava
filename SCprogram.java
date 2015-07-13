@@ -46,7 +46,7 @@ class Thread_1 extends Thread {
 			//Edge of the Right
 			if(Globals.listSCObjects.get(0).scratchX + Globals.listSCObjects.get(0).costumes.get(Globals.listSCObjects.get(0).currentCostume).width/2.0  >= (Globals.wScreen/2.0)){
 				Globals.listSCObjects.get(0).direction = Globals.listSCObjects.get(0).direction * -1;
-				Globals.listSCObjects.get(0).scratchX = Globals.wScreen/2.0 - Globals.listSCObjects.get(0).costumes.get(Globals.listSCObjects.get(0).currentCostume).width/2.0;
+Globals.listSCObjects.get(0).scratchX = Globals.wScreen/2.0 - Globals.listSCObjects.get(0).costumes.get(Globals.listSCObjects.get(0).currentCostume).width/2.0;
 			}
 			//Edge of the Top
 			if(Globals.listSCObjects.get(0).scratchY - Globals.listSCObjects.get(0).costumes.get(Globals.listSCObjects.get(0).currentCostume).height/2.0  <= (Globals.hScreen/2.0)*-1){
@@ -88,8 +88,9 @@ class Thread_3 extends Thread {
 	public void run(){
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-			if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = (double)0; }
+		if(Globals.listSCVariables.get(i).name.equals("test")){ Globals.listSCVariables.get(i).value = (double)0; }
 		}
+		Globals.cucumberKey = false;
 	}
 }
 class Thread_4 extends Thread {
@@ -107,6 +108,7 @@ class Thread_4 extends Thread {
 				if(Globals.listSCVariables.get(i).name.equals("test2")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)1; }
 			}
 		}
+		Globals.cucumberKey = false;
 	}
 }
 class Thread_5 extends Thread {
@@ -115,11 +117,13 @@ class Thread_5 extends Thread {
 		for(int i=0;i< Globals.listSCVariables.size();i++){
 			if(Globals.listSCVariables.get(i).name.equals("test")){Globals.listSCVariables.get(i).value = Globals.listSCVariables.get(i).value + (double)1; }
 		}
+		Globals.cucumberKey = false;
 	}
 }
 class Thread_6 extends Thread {
 	public void run(){
 		Globals.initiater.TriggerMessage("message1");
+		Globals.cucumberKey = false;
 	}
 }
 class Thread_7 extends Thread {
@@ -152,6 +156,7 @@ class Thread_8 extends Thread {
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
+		Globals.cucumberKey = false;
 	}
 }
 class Globals {
