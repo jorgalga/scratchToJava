@@ -131,35 +131,61 @@ public class SCparser1 {
         //Movement Snippets
         if(ins.get(0).equals("gotoX:y:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Goto XY instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(2)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+evalExpression(ins.get(1),numObject-1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+evalExpression(ins.get(2),numObject-1)+";\n";
         }
         if(ins.get(0).equals("forward:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Move forward instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+" ;\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject)+"  ;\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX = Globals.listSCObjects.get("+(numObject-1)+").scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject-1)+" ;\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY = Globals.listSCObjects.get("+(numObject-1)+").scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get("+(numObject-1)+").direction)))*"+evalExpression(ins.get(1),numObject-1)+"  ;\n";
         }
         if(ins.get(0).equals("turnRight:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Turn right instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction + 15;\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction + "+evalExpression(ins.get(1),numObject-1)+";\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"if(Globals.listSCObjects.get("+(numObject-1)+").direction >= 180){Globals.listSCObjects.get("+(numObject-1)+").direction = -180 + (Globals.listSCObjects.get("+(numObject-1)+").direction-180);}\n";
         }
         if(ins.get(0).equals("turnLeft:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Turn left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction - 15;\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = Globals.listSCObjects.get("+(numObject-1)+").direction - "+evalExpression(ins.get(1),numObject-1)+";\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"if(Globals.listSCObjects.get("+(numObject-1)+").direction >= -180){Globals.listSCObjects.get("+(numObject-1)+").direction = 180 - (Math.abs(Globals.listSCObjects.get("+(numObject-1)+").direction+180));}\n";
         }
         if(ins.get(0).equals("heading:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Heading left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = "+ins.get(1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").direction = "+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+        
+        if (ins.get(0).equals("pointTowards:")){
+        	//Graphical method. Requieres mouse position inside the frame.
+        }
+        if (ins.get(0).equals("gotoSpriteOrMouse:")){
+        	//Graphical method. Requieres mouse position inside the frame.
+        }
+        if (ins.get(0).equals("glideSecs:toX:y:elapsed:from:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"//glideSecs:toX:y:elapsed:from: instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep(("+evalExpression(ins.get(1),numObject-1)+"*1000));\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+evalExpression(ins.get(2),numObject-1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+evalExpression(ins.get(3),numObject-1)+";\n";
+        	
         }
         if(ins.get(0).equals("changeXposBy:")) {
         	s += duplicateString("\t", Globals.clevel + 2)+"//changeXposBy left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+ins.get(1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX =Globals.listSCObjects.get("+(numObject-1)+").scratchX"+evalExpression(ins.get(1),numObject-1)+";\n";
         }
         if(ins.get(0).equals("changeYposBy:")) {
         	s += duplicateString("\t", Globals.clevel + 2)+"//changeYposBy left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+ins.get(1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY =Globals.listSCObjects.get("+(numObject-1)+").scratchY"+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+        if(ins.get(0).equals("xpos:")) {
+        	s += duplicateString("\t", Globals.clevel + 2)+"//changeXposBy left instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+evalExpression(ins.get(1),numObject-1)+";\n";
+      
+        }
+        if(ins.get(0).equals("ypos:")) {
+        	s += duplicateString("\t", Globals.clevel + 2)+"//changeYposBy left instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+evalExpression(ins.get(1),numObject-1)+";\n";
+       
         }
         if(ins.get(0).equals("bounceOffEdge")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//bounce Off Edge instruction\n";
@@ -194,6 +220,10 @@ public class SCparser1 {
         	Globals.clevel--;
         	s += duplicateString("\t", Globals.clevel + 2)+"}\n";
         }
+        if(ins.get(0).equals(" setRotationStyle")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").rotationStyle ="+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+       
         //Appereance snippets
         if(ins.get(0).equals("lookLike:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").setCostumebyID(\""+(ins.get(1))+"\");\n";
@@ -231,6 +261,9 @@ public class SCparser1 {
         	
         }
         //Sound Snippets
+        if(ins.get(0).equals("playSound:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Play sound with name:"+ins.get(1)+"\n";
+        }
         if(ins.get(0).equals("doPlaySoundAndWait")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Play sound and wait instruction\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
@@ -238,6 +271,23 @@ public class SCparser1 {
         	s += duplicateString("\t", Globals.clevel + 2)+"Thread.sleep(Globals.getDurationByName(\""+ins.get(1)+"\"));\n";
         	Globals.clevel--;
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
+        }
+        if(ins.get(0).equals("playDrum")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Play drum number:"+evalExpression(ins.get(1),numObject-1)+" for "+evalExpression(ins.get(2),numObject-1)+" pulses \n";
+        	
+        }
+        if(ins.get(0).equals("noteOn:duration:elapsed:from:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Play note:"+evalExpression(ins.get(1),numObject-1)+" for "+evalExpression(ins.get(2),numObject-1)+" pulses \n";
+        	
+        }
+        if(ins.get(0).equals("instrument:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"//Fixed instrument to:"+evalExpression(ins.get(1),numObject-1)+" \n";
+        }
+        if(ins.get(0).equals("changeVolumeBy:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.volume = Globals.volume"+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+        if(ins.get(0).equals("setVolumeTo:")){
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.volume = "+evalExpression(ins.get(1),numObject-1)+";\n";
         }
         //Data Variable Snippets
         if(ins.get(0).equals("setVar:to:")){
@@ -644,6 +694,7 @@ public class SCparser1 {
             bw.write("\tpublic static int steps ;\n");
             bw.write("\tpublic static int wScreen = 480;\n");
             bw.write("\tpublic static int hScreen = 360;\n");
+            bw.write("\tpublic static int volume = 100;\n");
             bw.write("\tpublic static boolean infloop = true ;\n");
             bw.write("\tpublic static boolean cucumberKey = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
