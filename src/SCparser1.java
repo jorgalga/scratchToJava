@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import org.json.simple.JSONArray;
@@ -27,7 +28,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -39,6 +39,7 @@ import java.net.URL;
 public class SCparser1 {
 	
 	public static void main(String[] args) {
+		
         parseFile();
 	}
 	public static String duplicateString(String s, int n){
@@ -95,6 +96,23 @@ public class SCparser1 {
 				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
 			}else if(dataux2.get(0).equals("costumeIndex")){
 				return "Globals.listSCObjects.get("+(numObject-1)+").currentCostume";
+			}else if(dataux2.get(0).equals("timeAndDate")){
+
+				if(dataux2.get(1).equals("year")){
+					return ""+Calendar.getInstance().get(Calendar.YEAR);
+				}else if(dataux2.get(1).equals("month")){
+					return ""+Calendar.getInstance().get(Calendar.MONTH);
+				}else if(dataux2.get(1).equals("date")){
+					return ""+Calendar.getInstance().get(Calendar.DATE);
+				}else if(dataux2.get(1).equals("day of week")){
+					return ""+Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+				}else if(dataux2.get(1).equals("hour")){
+					return ""+Calendar.getInstance().get(Calendar.HOUR);
+				}else if(dataux2.get(1).equals("minute")){
+					return ""+Calendar.getInstance().get(Calendar.MINUTE);
+				}else if(dataux2.get(1).equals("second")){
+					return ""+Calendar.getInstance().get(Calendar.SECOND);
+				}
 			}
 		}
 		return"";
@@ -232,7 +250,7 @@ public class SCparser1 {
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").nextCostume();\n";
         }
         if(ins.get(0).equals("say:duration:elapsed:from:")){
-        	int auxv = Integer.parseInt(ins.get(2).toString());
+        	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
         	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: \""+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
@@ -242,7 +260,7 @@ public class SCparser1 {
         	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: \""+ins.get(1)+"\");\n";
         }
         if(ins.get(0).equals("think:duration:elapsed:from:")){
-        	int auxv = Integer.parseInt(ins.get(2).toString());
+        	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
         	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: \""+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
@@ -258,8 +276,28 @@ public class SCparser1 {
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").setNoVisible();\n";
         }
         if(ins.get(0).equals("startScene")){
-        	
+        	//Graphical method
         }
+        if(ins.get(0).equals("changeGraphicEffect:by:")){
+        	//Graphical method
+        }
+        if(ins.get(0).equals("filterReset")){
+        	//Graphical method
+        }
+        if(ins.get(0).equals("changeSizeBy:")){
+        	s = duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").size = Globals.listSCObjects.get("+(numObject-1)+").size"+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+        if(ins.get(0).equals("setSizeTo:")){
+        	s = duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").size = "+evalExpression(ins.get(1),numObject-1)+";\n";
+        }
+        if(ins.get(0).equals("comeToFront")){
+        	//Graphical method
+        }
+        if(ins.get(0).equals("goBackByLayers:")){
+        	//Graphical method
+        }
+        
+        
         //Sound Snippets
         if(ins.get(0).equals("playSound:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Play sound with name:"+ins.get(1)+"\n";
@@ -293,7 +331,7 @@ public class SCparser1 {
         if(ins.get(0).equals("setVar:to:")){
         	s +=duplicateString("\t", Globals.clevel + 2)+"//Set Variable to a value\n";
         	s +=duplicateString("\t", Globals.clevel + 2)+"for(int i=0;i< Globals.listSCVariables.size();i++){\n";
-        	s +=duplicateString("\t", Globals.clevel + 2)+"if(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){ Globals.listSCVariables.get(i).value = (double)"+ins.get(2)+"; }\n";
+        	s +=duplicateString("\t", Globals.clevel + 2)+"if(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){ Globals.listSCVariables.get(i).value = (double)"+evalExpression(ins.get(2),numObject-1)+"; }\n";
         	s +=duplicateString("\t", Globals.clevel + 2)+"}\n";
         }
         if(ins.get(0).equals("changeVar:by:")){
@@ -436,6 +474,7 @@ public class SCparser1 {
         		+ "import java.util.ArrayList;\n"
         		+ "import javax.swing.JFrame;\n"
         		+ "import javax.swing.JTextField;\n"
+        		+ "import java.util.Calendar;\n"
         		+ "public class SCprogram {}\n";
         File file;
         FileWriter fw; 
