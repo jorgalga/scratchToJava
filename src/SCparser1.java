@@ -28,6 +28,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+
+
 import java.io.File;
 import java.util.StringTokenizer;
 import java.awt.image.BufferedImage;
@@ -96,6 +98,10 @@ public class SCparser1 {
 				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
 			}else if(dataux2.get(0).equals("costumeIndex")){
 				return "Globals.listSCObjects.get("+(numObject-1)+").currentCostume";
+			}else if(dataux2.get(0).equals("volume")){
+				return "Globals.volume";
+			}else if(dataux2.get(0).equals("tempo")){
+				return "Globals.tempo";
 			}else if(dataux2.get(0).equals("timeAndDate")){
 
 				if(dataux2.get(1).equals("year")){
@@ -112,6 +118,28 @@ public class SCparser1 {
 					return ""+Calendar.getInstance().get(Calendar.MINUTE);
 				}else if(dataux2.get(1).equals("second")){
 					return ""+Calendar.getInstance().get(Calendar.SECOND);
+				}
+			} else if(dataux2.get(0).equals("getAttribute:of:")){
+				int oindex=-1;
+				for(int i = 0; i<Globals.SCOnames.size(); i++){
+					if(Globals.SCOnames.get(i).equals(dataux2.get(2))){
+						oindex=i;
+					}
+				}
+				if(oindex >=0){
+					if(dataux2.get(1).equals("x position")){
+						return "Globals.listSCObjects.get("+oindex+").scratchX";
+					}else if(dataux2.get(1).equals("y position")){
+						return "Globals.listSCObjects.get("+oindex+").scratchY";
+					}else if(dataux2.get(1).equals("costume #")){
+						return "Globals.listSCObjects.get("+oindex+").currentCostume";
+					}else if(dataux2.get(1).equals("direction")){
+						return "Globals.listSCObjects.get("+oindex+").direction";
+					}else if(dataux2.get(1).equals("size")){
+						return "Globals.listSCObjects.get("+oindex+").size";
+					}else if(dataux2.get(1).equals("volume")){
+						return "Globals.volume"; //At the moment the sound is global.
+					}
 				}
 			}
 		}
@@ -136,16 +164,26 @@ public class SCparser1 {
         if(ins.get(0).equals("whenGreenFlag")){
             Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
         }
+        if(ins.get(0).equals("whenSceneStarts")){
+        	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
+        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+".start();}\n";
+        }
         if(ins.get(0).equals("whenIReceive")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
-        	
         	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+".start();}\n";
-        	
         }
         if(ins.get(0).equals("broadcast:")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
-        	s+=s+=duplicateString("\t", Globals.clevel + 2)+"Globals.initiater.TriggerMessage(\""+ins.get(1)+"\");\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"Globals.initiater.TriggerMessage(\""+ins.get(1)+"\");\n";
         }
+        
+        if(ins.get(0).equals("whenSensorGreaterThan")){
+        	if(ins.get(1).equals("loudness")){
+        		Globals.Globals_snippet +=  "\t\tpublic static int Vumbral = "+ins.get(2)+";\n";
+        		Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\"loudness\")){Globals.scThread_"+numthread+".start();}\n";
+        	}
+        }
+        
         //Movement Snippets
         if(ins.get(0).equals("gotoX:y:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"//Goto XY instruction\n";
@@ -261,7 +299,7 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("think:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
-        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: \""+ins.get(1)+" and I go to sleep\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: \""+ins.get(1)+"\" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
@@ -276,7 +314,12 @@ public class SCparser1 {
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").setNoVisible();\n";
         }
         if(ins.get(0).equals("startScene")){
-        	//Graphical method
+        	s += duplicateString("\t", Globals.clevel + 2)+ "for(int i=0; i < Globals.listBackgrounds.size(); i++){\n";
+        	s += duplicateString("\t", Globals.clevel + 3)+ "if(Globals.listBackgrounds.get(i).equals(\""+ins.get(1)+"\")){\n";
+        	s += duplicateString("\t", Globals.clevel + 4)+ "Globals.currentCostumeIndex = i;\n";
+        	s += duplicateString("\t", Globals.clevel + 3)+ "}\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+ "}\n";
+        	s  +=duplicateString("\t", Globals.clevel + 2)+"Globals.initiater.TriggerMessage(\"startScene_"+ins.get(1)+"\");\n";
         }
         if(ins.get(0).equals("changeGraphicEffect:by:")){
         	//Graphical method
@@ -323,6 +366,8 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("changeVolumeBy:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.volume = Globals.volume"+evalExpression(ins.get(1),numObject-1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"if(Globals.volume > Globals.Vumbral){Globals.initiater.TriggerMessage(\"loudness\");}\n";
+  
         }
         if(ins.get(0).equals("setVolumeTo:")){
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.volume = "+evalExpression(ins.get(1),numObject-1)+";\n";
@@ -335,7 +380,7 @@ public class SCparser1 {
         	s +=duplicateString("\t", Globals.clevel + 2)+"}\n";
         }
         if(ins.get(0).equals("changeVar:by:")){
-        	System.out.println("Entro aca pive");
+        	
         	s+= duplicateString("\t",Globals.clevel+2)+"//Add value to a Variable by name\n";
         	s+= duplicateString("\t",Globals.clevel+2)+"for(int i=0;i< Globals.listSCVariables.size();i++){\n";
         	Globals.clevel++;
@@ -343,6 +388,27 @@ public class SCparser1 {
         	Globals.clevel--;
         	s+= duplicateString("\t",Globals.clevel+2)+"}\n";
         }
+        if(ins.get(0).equals("hideVariable:")){
+        	s+= duplicateString("\t",Globals.clevel+2)+"//Hide Variable by name\n";
+        	s+= duplicateString("\t",Globals.clevel+2)+"for(int i=0;i< Globals.listSCVariables.size();i++){\n";
+        	Globals.clevel++;
+        	s+= duplicateString("\t",Globals.clevel+2)+"if(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).visible = false; }\n";
+        	Globals.clevel--;
+        	s+= duplicateString("\t",Globals.clevel+2)+"}\n";
+        	
+        }
+        if(ins.get(0).equals("showVariable:")){
+        	s+= duplicateString("\t",Globals.clevel+2)+"//Hide Variable by name\n";
+        	s+= duplicateString("\t",Globals.clevel+2)+"for(int i=0;i< Globals.listSCVariables.size();i++){\n";
+        	Globals.clevel++;
+        	s+= duplicateString("\t",Globals.clevel+2)+"if(Globals.listSCVariables.get(i).name.equals(\""+ ins.get(1) + "\")){Globals.listSCVariables.get(i).visible = true; }\n";
+        	Globals.clevel--;
+        	s+= duplicateString("\t",Globals.clevel+2)+"}\n";
+        	
+        }
+        
+        
+        
         
         //Set Value Snippets
         if(ins.get(0).equals("setRotationStyle")){
@@ -401,6 +467,26 @@ public class SCparser1 {
         	Globals.clevel--;
         	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
         }
+        if(ins.get(0).equals("doRepeat")){
+        	s+=duplicateString("\t", Globals.clevel + 2)+"//Do-Repeat instruction\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"for(int i=0; i < "+ins.get(1)+"; i++){\n";
+        	Globals.clevel++;
+        	
+        	s+=duplicateString("\t", Globals.clevel + 2)+"i--;//i never increments \n";
+        	
+        		
+        	JSONArray bloqIns = (JSONArray) ins.get(1);
+        	for(int i=0; i < bloqIns.size() ; i++ ){
+        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+        		s+= evalInstruct(iaux2,numthread, numObject);
+        	}
+        	
+        	s+=duplicateString("\t", Globals.clevel + 2)+"try {\n";
+        	s+=duplicateString("\t", Globals.clevel + 3)+"Thread.sleep(1000/"+Globals.fps+");\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
+        	Globals.clevel--;
+        	s+=duplicateString("\t", Globals.clevel + 2)+"}\n";
+        }
         if(ins.get(0).equals("doIf")){
         	String operator="";
         	JSONArray iaux = (JSONArray) ins.get(1);
@@ -452,6 +538,13 @@ public class SCparser1 {
         	}
         	Globals.clevel--;
         	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        }
+        if(ins.get(0).equals("wait:elapsed:from:")){
+        	int auxv = Integer.parseInt(evalExpression(ins.get(1),numObject-1));
+        	s += duplicateString("\t", Globals.clevel + 2)+"//wait:elapsed:from: stopping thread for n seconds\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         return s;
     }
@@ -521,6 +614,7 @@ public class SCparser1 {
                 //Globals.SCObjets_snippet += "\tpublic static SCObject scObject_"+Globals.i_object+" = new SCObject();\n";
                 
                 String objName = (String) jsonChild.get("objName");
+                Globals.SCOnames.add(objName);
                 Object cci = jsonChild.get("currentCostumeIndex");
                 Object sx = jsonChild.get("scratchX");
                 Object sy = jsonChild.get("scratchY");
@@ -731,9 +825,12 @@ public class SCparser1 {
             bw.write("class Globals {\n"); 
             bw.write("\tpublic static boolean  appLaunched = false;\n");
             bw.write("\tpublic static int steps ;\n");
+            bw.write("\tpublic static int currentCostumeIndex = 0;\n");
             bw.write("\tpublic static int wScreen = 480;\n");
             bw.write("\tpublic static int hScreen = 360;\n");
             bw.write("\tpublic static int volume = 100;\n");
+            bw.write(Globals.Globals_snippet);
+            bw.write("\tpublic static int tempo = 60;\n");
             bw.write("\tpublic static boolean infloop = true ;\n");
             bw.write("\tpublic static boolean cucumberKey = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
@@ -844,6 +941,7 @@ class Globals{
 	
 	public static int total_numthreads = 0;
 	public static int i_object = 0;
+	public static String Globals_snippet = "";
 	public static String MessageEvents_snippet = "";
 	public static String SCObjets_snippet ="";
 	public static String SCObjets_AddListSnippet ="";
@@ -854,4 +952,6 @@ class Globals{
 	public static boolean soundsParsing = false;
 	public static boolean openControl = false;
 	public static boolean msgSending = false;
+	
+	public static ArrayList<String> SCOnames = new ArrayList<String>();
 }
