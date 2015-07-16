@@ -31,13 +31,13 @@ class Thread_1 extends Thread {
 		} catch (InterruptedException e) {e.printStackTrace();}
 		Globals.listSCObjects.get(0).scratchX =0;
 		Globals.listSCObjects.get(0).scratchY =0;
-		//changeXposBy left instruction
-		Globals.listSCObjects.get(0).scratchX =Globals.listSCObjects.get(0).scratchX10;
-		//changeXposBy left instruction
+		//changeXposBy instruction
+		Globals.listSCObjects.get(0).scratchX =Globals.listSCObjects.get(0).scratchX + 10;
+		//set posx instruction
 		Globals.listSCObjects.get(0).scratchX =0;
-		//changeYposBy left instruction
-		Globals.listSCObjects.get(0).scratchY =Globals.listSCObjects.get(0).scratchY10;
-		//changeYposBy left instruction
+		//changeYposBy instruction
+		Globals.listSCObjects.get(0).scratchY =Globals.listSCObjects.get(0).scratchY + 10;
+		//set posy instruction
 		Globals.listSCObjects.get(0).scratchY =0;
 		//bounce Off Edge instruction
 		//Edge of the Left
@@ -78,6 +78,7 @@ class Thread_2 extends Thread {
 		//Play note:60 for 0.5 pulses 
 		//Fixed instrument to:1 
 		Globals.volume = Globals.volume-10;
+		if(Globals.volume > Globals.Vumbral){Globals.initiater.TriggerMessage("loudness");}
 		Globals.volume = 100;
 		Globals.cucumberKey = false;
 	}
@@ -90,47 +91,55 @@ class Thread_3 extends Thread {
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)6; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)16; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)5; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)10; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)47; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)56; }
 		}
 		Globals.cucumberKey = false;
 	}
 }
 class Thread_4 extends Thread {
 	public void run(){
-		System.out.println("I say: "Hello! and I go to sleep");
+		System.out.println("I say: Hello! and I go to sleep");
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {e.printStackTrace();}
-		System.out.println("I say: "Hello!");
-		System.out.println("I think: "Hmm... and I go to sleep");
+		System.out.println("I say: Hello!");
+		System.out.println("I think: Hmm... and I go to sleep");
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {e.printStackTrace();}
-		System.out.println("I think: "Hmm...");
+		System.out.println("I think: Hmm... ");
 		Globals.listSCObjects.get(0).setVisible();
 		Globals.listSCObjects.get(0).setNoVisible();
 		Globals.listSCObjects.get(0).setCostumebyID("costume2");
 		Globals.listSCObjects.get(0).nextCostume();
+		for(int i=0; i < Globals.listBackgrounds.size(); i++){
+			if(Globals.listBackgrounds.get(i).equals("backdrop1")){
+				Globals.currentCostumeIndex = i;
+			}
+		}
+		Globals.initiater.TriggerMessage("startScene_backdrop1");
+		Globals.listSCObjects.get(0).size = Globals.listSCObjects.get(0).size-10;
+		Globals.listSCObjects.get(0).size = 100;
 		Globals.cucumberKey = false;
 	}
 }
@@ -138,23 +147,44 @@ class Thread_5 extends Thread {
 	public void run(){
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("test")){ Globals.listSCVariables.get(i).value = (double)Globals.volume; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("tempo")){ Globals.listSCVariables.get(i).value = (double); }
+		if(Globals.listSCVariables.get(i).name.equals("tempo")){ Globals.listSCVariables.get(i).value = (double)Globals.tempo; }
+		}
+		//Hide Variable by name
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+			if(Globals.listSCVariables.get(i).name.equals("tempo")){Globals.listSCVariables.get(i).visible = false; }
+		}
+		//Hide Variable by name
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+			if(Globals.listSCVariables.get(i).name.equals("tempo")){Globals.listSCVariables.get(i).visible = true; }
 		}
 		Globals.cucumberKey = false;
 	}
 }
 class Thread_6 extends Thread {
 	public void run(){
+		//wait:elapsed:from: stopping thread for n seconds
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {e.printStackTrace();}
+		//Do-Repeat instruction
+		for(int i=0; i < 10; i++){
+			i--;//i never increments 
+			try {
+				Thread.sleep(1000/30);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
 class Globals {
 	public static boolean  appLaunched = false;
 	public static int steps ;
+	public static int currentCostumeIndex = 0;
 	public static int wScreen = 480;
 	public static int hScreen = 360;
 	public static int volume = 100;
+	public static int tempo = 60;
 	public static boolean infloop = true ;
 	public static boolean cucumberKey = true;
 	public static boolean loop = true;
@@ -238,5 +268,6 @@ class Responder implements messageListener {
 	@Override
 	public void receptorEvent(String msg) {
 		if(msg.equals("message1")){Globals.scThread_3.start();}
+		if(msg.equals("backdrop1")){Globals.scThread_6.start();}
 	}
 }

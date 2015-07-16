@@ -81,7 +81,8 @@ public class SCparser1 {
 		}
 		else
 		{
-			System.out.println(dataux);
+			
+			//System.out.println(new String("test").length());
 			JSONArray dataux2 = (JSONArray) dataux;
 			System.out.println("el: "+dataux2.get(0));
 			if(dataux2.get(0).equals("randomFrom:to:")){
@@ -94,14 +95,20 @@ public class SCparser1 {
 				return  "("+ evalExpression(dataux2.get(1),numObject) +" * "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("/")){
 				return  "("+ evalExpression(dataux2.get(1),numObject) +" / "+ evalExpression(dataux2.get(2),numObject)+")"; 
+			}else if(dataux2.get(0).equals("stringLength:")){
+				return "new String(\""+dataux2.get(1)+"\").length()";
+			}else if(dataux2.get(0).equals("letter:of:")){
+				return "Character.toString(new String(\""+dataux2.get(2)+"\").charAt("+dataux2.get(1)+"))";
 			}else if(dataux2.get(0).equals("readVariable")){
 				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
 			}else if(dataux2.get(0).equals("costumeIndex")){
-				return "Globals.listSCObjects.get("+(numObject-1)+").currentCostume";
+				return "Globals.listSCObjects.get("+(numObject)+").currentCostume";
 			}else if(dataux2.get(0).equals("volume")){
 				return "Globals.volume";
 			}else if(dataux2.get(0).equals("tempo")){
 				return "Globals.tempo";
+			}else if(dataux2.get(0).equals("touching:")){
+				return "isTouching(\""+dataux2.get(1)+"\")";
 			}else if(dataux2.get(0).equals("timeAndDate")){
 
 				if(dataux2.get(1).equals("year")){
@@ -226,20 +233,20 @@ public class SCparser1 {
         	
         }
         if(ins.get(0).equals("changeXposBy:")) {
-        	s += duplicateString("\t", Globals.clevel + 2)+"//changeXposBy left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX =Globals.listSCObjects.get("+(numObject-1)+").scratchX"+evalExpression(ins.get(1),numObject-1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//changeXposBy instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX =Globals.listSCObjects.get("+(numObject-1)+").scratchX + "+evalExpression(ins.get(1),numObject-1)+";\n";
         }
         if(ins.get(0).equals("changeYposBy:")) {
-        	s += duplicateString("\t", Globals.clevel + 2)+"//changeYposBy left instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY =Globals.listSCObjects.get("+(numObject-1)+").scratchY"+evalExpression(ins.get(1),numObject-1)+";\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//changeYposBy instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY =Globals.listSCObjects.get("+(numObject-1)+").scratchY + "+evalExpression(ins.get(1),numObject-1)+";\n";
         }
         if(ins.get(0).equals("xpos:")) {
-        	s += duplicateString("\t", Globals.clevel + 2)+"//changeXposBy left instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//set posx instruction\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchX ="+evalExpression(ins.get(1),numObject-1)+";\n";
       
         }
         if(ins.get(0).equals("ypos:")) {
-        	s += duplicateString("\t", Globals.clevel + 2)+"//changeYposBy left instruction\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//set posy instruction\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").scratchY ="+evalExpression(ins.get(1),numObject-1)+";\n";
        
         }
@@ -289,23 +296,23 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("say:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
-        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: \""+ins.get(1)+" and I go to sleep\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: "+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         if(ins.get(0).equals("say:")){
-        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: \""+ins.get(1)+"\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I say: "+ins.get(1)+"\");\n";
         }
         if(ins.get(0).equals("think:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
-        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: \""+ins.get(1)+"\" and I go to sleep\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: "+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         if(ins.get(0).equals("think:")){
-        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: \""+ins.get(1)+"\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"System.out.println(\"I think: "+ins.get(1)+" \");\n";
         }
         if(ins.get(0).equals("show")){
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
@@ -459,7 +466,7 @@ public class SCparser1 {
         	}
         	
         	s+=duplicateString("\t", Globals.clevel + 2)+"//Do-wait-until instruction\n";
-        	s+=duplicateString("\t", Globals.clevel + 2)+"while("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"while("+evalExpression(iaux.get(1),numObject-1)+" "+operator+" "+evalExpression(iaux.get(2),numObject-1)+" ){\n";
         	Globals.clevel++;
         	s+=duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s+=duplicateString("\t", Globals.clevel + 2)+"Thread.sleep(1000/"+Globals.fps+");\n";
@@ -473,14 +480,14 @@ public class SCparser1 {
         	Globals.clevel++;
         	
         	s+=duplicateString("\t", Globals.clevel + 2)+"i--;//i never increments \n";
-        	
-        		
-        	JSONArray bloqIns = (JSONArray) ins.get(1);
-        	for(int i=0; i < bloqIns.size() ; i++ ){
-        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= evalInstruct(iaux2,numthread, numObject);
+        	System.out.println(ins.get(2));
+        	if(ins.get(2) != null){	
+        	JSONArray bloqIns = (JSONArray) ins.get(2);
+	        	for(int i=0; i < bloqIns.size() ; i++ ){
+	        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+	        		s+= evalInstruct(iaux2,numthread, numObject);
+	        	}
         	}
-        	
         	s+=duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s+=duplicateString("\t", Globals.clevel + 3)+"Thread.sleep(1000/"+Globals.fps+");\n";
         	s+=duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
@@ -488,56 +495,73 @@ public class SCparser1 {
         	s+=duplicateString("\t", Globals.clevel + 2)+"}\n";
         }
         if(ins.get(0).equals("doIf")){
-        	String operator="";
-        	JSONArray iaux = (JSONArray) ins.get(1);
-        	if(iaux.get(0).equals("=")){
-        		operator = "==";
-        	}else if(iaux.get(0).equals("<")){
-        		operator = "<";
-        	}else if(iaux.get(0).equals(">")){
-        		operator = ">";
-        	}
-        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n" ;
-        	Globals.clevel++;
-        	JSONArray bloqIns = (JSONArray) ins.get(2);
-        	for(int i=0; i < bloqIns.size() ; i++ ){
-        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= evalInstruct(iaux2,numthread, numObject);
-        	}
-        	Globals.clevel--;
-        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        	System.out.println(ins.get(2));
+        	
+	        	String operator="";
+	        	JSONArray iaux = (JSONArray) ins.get(1);
+	        	if(iaux.get(0).equals("=")){
+	        		operator = "==";
+	        	}else if(iaux.get(0).equals("<")){
+	        		operator = "<";
+	        	}else if(iaux.get(0).equals(">")){
+	        		operator = ">";
+	        	}else {operator ="sensor";}
+	        	System.out.println("Operator "+operator);
+	        	
+	        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if instruction\n";
+	        	if(operator.equals("sensor")){
+	        		s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(ins.get(1),numObject-1)+" ){\n";
+	        	}else{
+	        		s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject-1)+" "+operator+" "+evalExpression(iaux.get(2),numObject-1)+" ){\n" ;
+		        		
+	        	}
+	        		
+	        	Globals.clevel++;
+	        	JSONArray bloqIns = (JSONArray) ins.get(2);
+	        	for(int i=0; i < bloqIns.size() ; i++ ){
+	        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+	        		s+= evalInstruct(iaux2,numthread, numObject);
+	        	}
+	        	Globals.clevel--;
+	        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        	
         }
         
         if(ins.get(0).equals("doIfElse")){
-        	String operator="";
-        	JSONArray iaux = (JSONArray) ins.get(1);
-        	if(iaux.get(0).equals("=")){
-        		operator = "==";
-        	}else if(iaux.get(0).equals("<")){
-        		operator = "<";
-        	}else if(iaux.get(0).equals(">")){
-        		operator = ">";
-        	}
-        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if-else instruction\n";
-        	s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n" ;
-        	Globals.clevel++;
-        	JSONArray bloqIns = (JSONArray) ins.get(2);
-        	for(int i=0; i < bloqIns.size() ; i++ ){
-        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= evalInstruct(iaux2,numthread, numObject);
-        	}
-        	Globals.clevel--;
-        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
-        	s+= duplicateString("\t", Globals.clevel + 2) +"else{\n";
-        	Globals.clevel++;
-        	bloqIns = (JSONArray) ins.get(3);
-        	for(int i=0; i < bloqIns.size() ; i++ ){
-        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-        		s+= evalInstruct(iaux2,numthread, numObject);
-        	}
-        	Globals.clevel--;
-        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+        	
+	        	String operator="";
+	        	JSONArray iaux = (JSONArray) ins.get(1);
+	        	if(iaux.get(0).equals("=")){
+	        		operator = "==";
+	        	}else if(iaux.get(0).equals("<")){
+	        		operator = "<";
+	        	}else if(iaux.get(0).equals(">")){
+	        		operator = ">";
+	        	}
+	        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if-else instruction\n";
+	        	s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject)+" "+operator+" "+evalExpression(iaux.get(2),numObject)+" ){\n" ;
+	        	JSONArray bloqIns;
+	        	if(ins.get(2)!=null){
+		        	Globals.clevel++;
+		        	bloqIns = (JSONArray) ins.get(2);
+		        	for(int i=0; i < bloqIns.size() ; i++ ){
+		        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+		        		s+= evalInstruct(iaux2,numthread, numObject);
+		        	}
+		        	Globals.clevel--;
+	        	}
+	        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
+	        	s+= duplicateString("\t", Globals.clevel + 2) +"else{\n";
+	        	if(ins.get(3)!=null){
+		        	Globals.clevel++;
+		        	bloqIns = (JSONArray) ins.get(3);
+		        	for(int i=0; i < bloqIns.size() ; i++ ){
+		        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+		        		s+= evalInstruct(iaux2,numthread, numObject);
+		        	}
+		        	Globals.clevel--;
+	        	}
+	        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
         }
         if(ins.get(0).equals("wait:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(1),numObject-1));
@@ -553,7 +577,7 @@ public class SCparser1 {
     	String workingDir = System.getProperty("user.dir");
   	    //System.out.println("Current working directory : " + workingDir);
     	
-        //Aux variables
+        //Aux variable
         final String filePath = workingDir+ "/scratch/project.json";
         FileReader reader = null;
         
