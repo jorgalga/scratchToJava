@@ -95,23 +95,23 @@ class Thread_3 extends Thread {
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)16; }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)17; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)5; }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)6; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)10; }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)0; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)47; }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)17; }
 		}
 		//Set Variable to a value
 		for(int i=0;i< Globals.listSCVariables.size();i++){
-		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)56; }
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)12; }
 		}
 		Globals.cucumberKey = false;
 	}
@@ -177,6 +177,103 @@ class Thread_6 extends Thread {
 				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		//Do-forever instruction
+		for(int i=0; i < Globals.steps; i++){
+			if(Globals.infloop == true){i--;}//i does not increment
+			else{System.out.println("[Thread6] - Step:"+i);}
+			//Do-if instruction
+			if(new String("world").length() < Character.toString(new String("world").charAt(1)) ){
+			}
+			//Do-if-else instruction
+			if("hello "+"world" == "helloworld" ){
+			}
+			else{
+			}
+			//Do-wait-until instruction
+			while((13 % 6) < Math.round(333.323) ){
+				try {
+				Thread.sleep(1000/30);
+				} catch (InterruptedException e) {e.printStackTrace();}
+			}
+			try {
+				Thread.sleep(1000/30);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		Globals.cucumberKey = false;
+	}
+}
+class Thread_7 extends Thread {
+	public void run(){
+		//Do-if instruction
+		if(Globals.listSCObjects.get(0).isTouching("_edge_")){
+			//Do-if instruction
+			if(Globals.listSCObjects.get(0).isTouchingColor("-4267018")){
+				//Do-if instruction
+				if(false){
+					//Do-if instruction
+					if(100 == Globals.volume ){
+					}
+				}
+			}
+		}
+		Globals.cucumberKey = false;
+	}
+}
+class Thread_8 extends Thread {
+	public void run(){
+		//Do-if instruction
+		if("answer" == "paco" ){
+		}
+		Globals.cucumberKey = false;
+	}
+}
+class Thread_9 extends Thread {
+	public void run(){
+		Globals.cucumberKey = false;
+	}
+}
+class Thread_10 extends Thread {
+	public void run(){
+		//Do-if instruction
+		if(false){
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).scratchX ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).scratchX  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).scratchY ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).scratchY  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).direction ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).direction  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).currentCostume ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).currentCostume  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).size ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.listSCObjects.get(0).size  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.volume ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*Globals.volume  ;
+			//Move forward instruction
+			Globals.listSCObjects.get(0).scratchX = Globals.listSCObjects.get(0).scratchX + Math.round(Math.sin(Math.toRadians(Globals.listSCObjects.get(0).direction)))*5675 ;
+			Globals.listSCObjects.get(0).scratchY = Globals.listSCObjects.get(0).scratchY + Math.round(Math.cos(Math.toRadians(Globals.listSCObjects.get(0).direction)))*5675  ;
+			//Set Variable to a value
+			for(int i=0;i< Globals.listSCVariables.size();i++){
+			if(Globals.listSCVariables.get(i).name.equals("nomuser")){ Globals.listSCVariables.get(i).value = (double)0; }
+			}
+		}
+		Globals.cucumberKey = false;
+	}
+}
+class Thread_11 extends Thread {
+	public void run(){
+		//Set Variable to a value
+		for(int i=0;i< Globals.listSCVariables.size();i++){
+		if(Globals.listSCVariables.get(i).name.equals("test4")){ Globals.listSCVariables.get(i).value = (double)12; }
+		}
+		Globals.cucumberKey = false;
+	}
+}
 class Globals {
 	public static boolean  appLaunched = false;
 	public static int steps ;
@@ -184,6 +281,7 @@ class Globals {
 	public static int wScreen = 480;
 	public static int hScreen = 360;
 	public static int volume = 100;
+	public static int Vumbral = 10;
 	public static int tempo = 60;
 	public static boolean infloop = true ;
 	public static boolean cucumberKey = true;
@@ -198,6 +296,11 @@ class Globals {
 	public static Thread_4 scThread_4 = new Thread_4();
 	public static Thread_5 scThread_5 = new Thread_5();
 	public static Thread_6 scThread_6 = new Thread_6();
+	public static Thread_7 scThread_7 = new Thread_7();
+	public static Thread_8 scThread_8 = new Thread_8();
+	public static Thread_9 scThread_9 = new Thread_9();
+	public static Thread_10 scThread_10 = new Thread_10();
+	public static Thread_11 scThread_11 = new Thread_11();
 	public static App appT = new App();
 	public static ArrayList<SCVariable> listSCVariables = new ArrayList<SCVariable>();
 	public static ArrayList<SCObject> listSCObjects = new ArrayList<SCObject>();
@@ -235,6 +338,18 @@ class MKeyListener extends KeyAdapter {
 		if (event.getKeyChar() == 't') {
 			Globals.scThread_5.start();
 		}
+		if (event.getKeyChar() == 'a') {
+			Globals.scThread_8.start();
+		}
+		if (event.getKeyCode() == KeyEvent.VK_SPACE) {
+			Globals.scThread_9.start();
+		}
+		if (event.getKeyChar() == 'b') {
+			Globals.scThread_10.start();
+		}
+		if (event.getKeyChar() == 'h') {
+			Globals.scThread_11.start();
+		}
 	}
 }
 class App extends Thread{
@@ -248,6 +363,16 @@ class App extends Thread{
 		jframe.setVisible(true);
 		//Filling the ArrayListwith the SCobjects
 		Globals.listSCObjects.add(new SCObject("Sprite1",0,90.47999999999999,30.159999999999997,0,"leftRight",false,1,false,1));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("costume1",1,"09dc888b0b7df19f70d81588ae73420e.svg",1,47,55,95,111));
+		Globals.listSCObjects.get(0).costumes.add(new Costume("costume2",2,"3696356a03a8d938318876a593572843.svg",1,47,55,95,111));
+		try{
+		Globals.listSCSounds.add(new SCSound("meow",0,"83c36d806dc92327b9e7049a565c6bff.wav",18688,22050,"","/Users/jorgalga/Programacio?n/Java/SCparser1/scratch/"));
+		}catch(Exception e){}
+		Globals.listBackgrounds.add(new Costume("backdrop1",3,"739b5e2a2435f6e1ec2993791b423146.png",1,240,180,480,360));
+		Globals.listSCVariables.add(new SCVariable("test",(double)100,false));
+		Globals.listSCVariables.add(new SCVariable("tempo",(double)60,false));
+		Globals.listSCVariables.add(new SCVariable("nomuser",(double)0,false));
+		Globals.listSCVariables.add(new SCVariable("test4",(double)52,false));
 		Globals.cucumberKey = false;
 		Globals.appLaunched = true;
 		Globals.initiater.addListener(Globals.responder);
@@ -269,5 +394,6 @@ class Responder implements messageListener {
 	public void receptorEvent(String msg) {
 		if(msg.equals("message1")){Globals.scThread_3.start();}
 		if(msg.equals("backdrop1")){Globals.scThread_6.start();}
+		if(msg.equals("loudness")){Globals.scThread_7.start();}
 	}
 }

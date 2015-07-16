@@ -75,11 +75,13 @@ public class SCparser1 {
 	public static String evalExpression(Object dataux,  int numObject){
 		
 		System.out.println(dataux.getClass());
-		if(dataux instanceof String || dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
+		if(dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
 			System.out.println("el: "+dataux.toString());
 			return dataux.toString();
 		}
-		else
+		else if(dataux instanceof String){
+			return "\""+dataux.toString()+"\"";
+		}else
 		{
 			
 			//System.out.println(new String("test").length());
@@ -95,6 +97,10 @@ public class SCparser1 {
 				return  "("+ evalExpression(dataux2.get(1),numObject) +" * "+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("/")){
 				return  "("+ evalExpression(dataux2.get(1),numObject) +" / "+ evalExpression(dataux2.get(2),numObject)+")"; 
+			}else if(dataux2.get(0).equals("%")){
+				return "("+ evalExpression(dataux2.get(1),numObject) +" % "+ evalExpression(dataux2.get(2),numObject) +")";
+			}else if(dataux2.get(0).equals("rounded")){
+				return "Math.round("+evalExpression(dataux2.get(1),numObject)+")";
 			}else if(dataux2.get(0).equals("stringLength:")){
 				return "new String(\""+dataux2.get(1)+"\").length()";
 			}else if(dataux2.get(0).equals("letter:of:")){
@@ -103,13 +109,31 @@ public class SCparser1 {
 				return "Globals.getSCValueByName(\""+dataux2.get(1)+"\")";
 			}else if(dataux2.get(0).equals("costumeIndex")){
 				return "Globals.listSCObjects.get("+(numObject)+").currentCostume";
-			}else if(dataux2.get(0).equals("volume")){
+			}else if(dataux2.get(0).equals("volume") || dataux2.get(0).equals("soundLevel")){
 				return "Globals.volume";
 			}else if(dataux2.get(0).equals("tempo")){
 				return "Globals.tempo";
 			}else if(dataux2.get(0).equals("touching:")){
-				return "isTouching(\""+dataux2.get(1)+"\")";
-			}else if(dataux2.get(0).equals("timeAndDate")){
+				return "Globals.listSCObjects.get("+(numObject)+").isTouching(\""+dataux2.get(1)+"\")";
+			}else if(dataux2.get(0).equals("concatenate:with:")){
+				return ""+evalExpression(dataux2.get(1),numObject)+"+"+evalExpression(dataux2.get(2),numObject)+"";
+			}else if(dataux2.get(0).equals("touchingColor:")){
+				return "Globals.listSCObjects.get("+(numObject)+").isTouchingColor(\""+dataux2.get(1)+"\")";
+			}else if(dataux2.get(0).equals("color:sees:")){
+				return "false"; //Is not fully implemented (Graphical execution)
+			}else if(dataux2.get(0).equals("distanceTo:")){
+				return "100";   //Is not fully implemented (Graphical execution)
+			}else if(dataux2.get(0).equals("answer")){
+				return "\"answer\"";   //Is not fully implemented (Graphical execution)
+			}else if(dataux2.get(0).equals("timestamp")){
+				return "5675";
+			}else if(dataux2.get(0).equals("keyPressed:")){
+				return "false";
+			}else if(dataux2.get(0).equals("getUserName")){
+				return "0";
+			}	
+			else if(dataux2.get(0).equals("timeAndDate")){
+			
 
 				if(dataux2.get(1).equals("year")){
 					return ""+Calendar.getInstance().get(Calendar.YEAR);
@@ -186,7 +210,7 @@ public class SCparser1 {
         
         if(ins.get(0).equals("whenSensorGreaterThan")){
         	if(ins.get(1).equals("loudness")){
-        		Globals.Globals_snippet +=  "\t\tpublic static int Vumbral = "+ins.get(2)+";\n";
+        		Globals.Globals_snippet +=  "\tpublic static int Vumbral = "+ins.get(2)+";\n";
         		Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\"loudness\")){Globals.scThread_"+numthread+".start();}\n";
         	}
         }
@@ -510,19 +534,21 @@ public class SCparser1 {
 	        	
 	        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if instruction\n";
 	        	if(operator.equals("sensor")){
-	        		s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(ins.get(1),numObject-1)+" ){\n";
+	        		s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(ins.get(1),numObject-1)+"){\n";
 	        	}else{
 	        		s += duplicateString("\t", Globals.clevel + 2)+"if("+evalExpression(iaux.get(1),numObject-1)+" "+operator+" "+evalExpression(iaux.get(2),numObject-1)+" ){\n" ;
 		        		
 	        	}
-	        		
-	        	Globals.clevel++;
-	        	JSONArray bloqIns = (JSONArray) ins.get(2);
-	        	for(int i=0; i < bloqIns.size() ; i++ ){
-	        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
-	        		s+= evalInstruct(iaux2,numthread, numObject);
+	        	if(ins.get(2) != null){	
+		        	Globals.clevel++;
+		        	
+		        	JSONArray bloqIns = (JSONArray) ins.get(2);
+		        	for(int i=0; i < bloqIns.size() ; i++ ){
+		        		JSONArray iaux2 = (JSONArray) bloqIns.get(i) ;
+		        		s+= evalInstruct(iaux2,numthread, numObject);
+		        	}
+		        	Globals.clevel--;
 	        	}
-	        	Globals.clevel--;
 	        	s+= duplicateString("\t", Globals.clevel + 2) +"}\n";
         	
         }
