@@ -38,11 +38,24 @@ import javax.swing.*;
 import javax.imageio.ImageIO;
 
 import java.net.URL;
+
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 public class SCparser1 {
 	
 	public static void main(String[] args) {
 		
-        parseFile();
+		
+        System.out.println(args[0]);
+        
+		
+        parseFile(args[0]);
+        
+        deleteTempFiles();
 	}
 	public static String duplicateString(String s, int n){
 		String res="";
@@ -183,35 +196,39 @@ public class SCparser1 {
     	if(ins.get(0).equals("whenKeyPressed")){
     		if(ins.get(1).equals("space")){
     			Globals.KeyPress_snippet += "\t\tif (event.getKeyCode() == KeyEvent.VK_SPACE) {\n" ;
-    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n";
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+"= new Thread_"+numthread+"();\n";
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     		else{
     			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == '"+ins.get(1)+"') {\n" ;
-    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n";
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+"= new Thread_"+numthread+"();\n";
+    			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     	}
         if(ins.get(0).equals("whenGreenFlag")){
-            Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+Globals.total_numthreads+".start();\n" ;
+        	Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+numthread+"= new Thread_"+numthread+"();\n";
+            Globals.Listener_snippet+= "\t\t\tGlobals.scThread_"+numthread+".start();\n" ;
         }
         if(ins.get(0).equals("whenSceneStarts")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
-        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+".start();}\n";
+        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+"= new Thread_"+numthread+"(); Globals.scThread_"+numthread+".start();}\n";
         }
         if(ins.get(0).equals("whenIReceive")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
-        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.scThread_"+numthread+".start();}\n";
+        	Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\""+ins.get(1)+"\")){Globals.listSCMessage_received.add(new SCMessage(\""+ins.get(1)+"\","+(numObject-1)+"));Globals.scThread_"+numthread+"= new Thread_"+numthread+"();Globals.scThread_"+numthread+".start();}\n";
         }
         if(ins.get(0).equals("broadcast:")){
         	if(Globals.msgSending == false){initMsgSnippet();Globals.msgSending = true;}
         	s+=duplicateString("\t", Globals.clevel + 2)+"Globals.initiater.TriggerMessage(\""+ins.get(1)+"\");\n";
+        	s+=duplicateString("\t", Globals.clevel + 2)+"Globals.listSCMessage_sent.add(new SCMessage(\""+ins.get(1)+"\","+(numObject-1)+"));\n";
         }
         
         if(ins.get(0).equals("whenSensorGreaterThan")){
         	if(ins.get(1).equals("loudness")){
         		Globals.Globals_snippet +=  "\tpublic static int Vumbral = "+ins.get(2)+";\n";
-        		Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\"loudness\")){Globals.scThread_"+numthread+".start();}\n";
+        		Globals.MessageEvents_snippet+= "\t\tif(msg.equals(\"loudness\")){Globals.scThread_"+numthread+"= new Thread_"+numthread+"();Globals.scThread_"+numthread+".start();}\n";
         	}
         }
         
@@ -598,10 +615,114 @@ public class SCparser1 {
         }
         return s;
     }
-    public static void parseFile() {
+    public static void deleteTempFiles(){
+    	String workingDir = System.getProperty("user.dir");
+    	File directory = new File(workingDir+"/scratch/");
+    	//make sure directory exists
+    	if(!directory.exists()){
+    		System.out.println("No existe");
+    	}
+    	else{
+    		 try{
+          	   
+                 delete(directory);
+          	
+             }catch(IOException e){
+                 e.printStackTrace();
+                 System.exit(0);
+             }
+    	}
+    }
+    public static void delete(File file)
+        	throws IOException{
+     
+        	if(file.isDirectory()){
+     
+        		//directory is empty, then delete it
+        		if(file.list().length==0){
+        			
+        		   file.delete();
+        		   System.out.println("Directory is deleted : " 
+                                                     + file.getAbsolutePath());
+        			
+        		}else{
+        			
+        		   //list all the directory contents
+            	   String files[] = file.list();
+         
+            	   for (String temp : files) {
+            	      //construct the file structure
+            	      File fileDelete = new File(file, temp);
+            		 
+            	      //recursive delete
+            	     delete(fileDelete);
+            	   }
+            		
+            	   //check the directory again, if empty then delete it
+            	   if(file.list().length==0){
+               	     file.delete();
+            	     System.out.println("Directory is deleted : " 
+                                                      + file.getAbsolutePath());
+            	   }
+        		}
+        		
+        	}else{
+        		//if file, then delete it
+        		file.delete();
+        		System.out.println("File is deleted : " + file.getAbsolutePath());
+        	}
+        }
+    public static void parseFile(String scf) {
         
     	String workingDir = System.getProperty("user.dir");
+    	System.out.println(workingDir);
   	    //System.out.println("Current working directory : " + workingDir);
+    	
+    	try {
+			ZipFile zipFile = new ZipFile(workingDir+"/"+ scf);
+			Enumeration<?> enu = zipFile.entries();
+			while (enu.hasMoreElements()) {
+				ZipEntry zipEntry = (ZipEntry) enu.nextElement();
+
+				String name = zipEntry.getName();
+				long size = zipEntry.getSize();
+				long compressedSize = zipEntry.getCompressedSize();
+				System.out.printf("name: %-20s | size: %6d | compressed size: %6d\n", 
+						name, size, compressedSize);
+				
+				File theDir = new File("scratch");
+				  try{
+				        theDir.mkdir();
+				    } 
+				    catch(SecurityException se){
+				        //handle it
+				    } 
+				
+				File file = new File("scratch/"+name);
+				if (name.endsWith("/")) {
+					file.mkdirs();
+					continue;
+				}
+
+				File parent = file.getParentFile();
+				if (parent != null) {
+					parent.mkdirs();
+				}
+
+				InputStream is = zipFile.getInputStream(zipEntry);
+				FileOutputStream fos = new FileOutputStream(file);
+				byte[] bytes = new byte[1024];
+				int length;
+				while ((length = is.read(bytes)) >= 0) {
+					fos.write(bytes, 0, length);
+				}
+				is.close();
+				fos.close();
+			}
+			zipFile.close();
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
     	
         //Aux variable
         final String filePath = workingDir+ "/scratch/project.json";
@@ -652,7 +773,8 @@ public class SCparser1 {
             final Iterator it3 = jsonSounds.iterator();
             */
             final JSONArray jsonVar = (JSONArray) json.get("variables");
-            final Iterator it4 = jsonVar.iterator();
+            Iterator it4=null;
+            if (jsonVar != null){ it4 = jsonVar.iterator();}
             
             //Foreach Object in the Json File
             while (it.hasNext()) {
@@ -688,7 +810,9 @@ public class SCparser1 {
                 for(int i = 0 ; i < jsonScripts.size() ; i++){  
                     //System.out.println("--[NEW Thread of the child]");
                     Globals.total_numthreads++;
-                    Globals.SCThreads_snippet += "\tpublic static Thread_"+Globals.total_numthreads+" scThread_"+Globals.total_numthreads+" = new Thread_"+Globals.total_numthreads+"();\n";
+                    Globals.SCThreads_snippet += "\tpublic static Thread_"+Globals.total_numthreads+" scThread_"+Globals.total_numthreads+";\n";
+                    
+                    Globals.Adding_SCThreads_snippet += "\t\tGlobals.listSCObjects.get("+(Globals.i_object-1)+").threads.add(Globals.scThread_"+Globals.total_numthreads+");\n";
                     try{
                         file = new File("SCprogram.java");
                         fw = new FileWriter(file.getAbsoluteFile(), true);
@@ -717,7 +841,7 @@ public class SCparser1 {
                         file = new File("SCprogram.java");
                         fw = new FileWriter(file.getAbsoluteFile(), true);
                         bw = new BufferedWriter(fw);
-                        bw.write ("\t\tGlobals.cucumberKey = false;\n"); //
+                        //bw.write ("\t\tGlobals.cucumberKey = false;\n"); //
                         bw.write("\t}\n");
                         bw.write("}\n");  
                         bw.close(); 
@@ -784,16 +908,17 @@ public class SCparser1 {
                 	caux += jsonSon.get("rate") + ",";
                 	caux += "\""+(String) jsonSon.get("format")+"\",";
                 	caux += "\""+ workingDir + "/scratch/" +"\")";
-                	
+                	System.out.println(workingDir);
                 	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCSounds.add("+caux+");\n";
                 }
-                
+                if(Globals.soundsParsing == true){
+                	Globals.soundsParsing = false;
+                	Globals.SCObjets_AddListSnippet += "\t\t}catch(Exception e){}\n";
+                }
                 
             	}//En comparision for parsin only SCObjects
             }//End Object iterator
-            if(Globals.soundsParsing == true){
-            	Globals.SCObjets_AddListSnippet += "\t\t}catch(Exception e){}\n";
-            }
+           
             //Reading the Backgrounds
             while(it2.hasNext()){
             	String caux = " ";
@@ -841,18 +966,19 @@ public class SCparser1 {
             	
                	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listBackgrounds.add("+caux+");\n";
             }
-            while(it4.hasNext()){
-            	JSONObject jsonChild = (JSONObject) it4.next();
-            	String caux = " ";
-            	caux = "new SCVariable(\"";
-            	caux+= (String) jsonChild.get("name")+"\",";
-            	caux+= "(double)"+jsonChild.get("value")+",";
-            	caux+= jsonChild.get("isPersistent")+")";
-            	
-            	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCVariables.add("+caux+");\n";
-            	
+            if(jsonVar != null){
+	            while(it4.hasNext()){
+	            	JSONObject jsonChild = (JSONObject) it4.next();
+	            	String caux = " ";
+	            	caux = "new SCVariable(\"";
+	            	caux+= (String) jsonChild.get("name")+"\",";
+	            	caux+= "(double)"+jsonChild.get("value")+",";
+	            	caux+= jsonChild.get("isPersistent")+")";
+	            	
+	            	Globals.SCObjets_AddListSnippet += "\t\tGlobals.listSCVariables.add("+caux+");\n";
+	            	
+	            }
             }
-            
             
         }
         catch(Exception e) {
@@ -883,6 +1009,7 @@ public class SCparser1 {
             bw.write("\tpublic static int tempo = 60;\n");
             bw.write("\tpublic static boolean infloop = true ;\n");
             bw.write("\tpublic static boolean cucumberKey = true;\n");
+            bw.write("\tpublic static boolean cucumberKey_msg = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
             bw.write("\tpublic static long total_timeApp = 0;\n");
             bw.write("\tpublic static long timeApp = System.currentTimeMillis();\n");
@@ -898,6 +1025,8 @@ public class SCparser1 {
             bw.write("\tpublic static ArrayList<Costume> listBackgrounds = new ArrayList <Costume>();\n");
             bw.write("\tpublic static ArrayList<Thread> listScripts = new ArrayList <Thread>();\n");
             bw.write("\tpublic static ArrayList<SCSound> listSCSounds = new ArrayList <SCSound>();\n");
+            bw.write("\tpublic static ArrayList<SCMessage> listSCMessage_sent = new ArrayList <SCMessage>();\n");
+            bw.write("\tpublic static ArrayList<SCMessage> listSCMessage_received = new ArrayList <SCMessage>();\n");
             //Global functions
             bw.write("\tpublic static double getSCValueByName(String id){\n");
             bw.write("\t\tdouble res=-999999;\n");
@@ -971,6 +1100,7 @@ public class SCparser1 {
             //Filling the ArrayListwith the SCobjects
             bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
             bw.write(Globals.SCObjets_AddListSnippet);
+            bw.write(Globals.Adding_SCThreads_snippet);
             bw.write("\t\tGlobals.cucumberKey = false;\n");
             bw.write("\t\tGlobals.appLaunched = true;\n");
             if(Globals.msgSending){bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");}
@@ -996,6 +1126,7 @@ class Globals{
 	public static String SCObjets_snippet ="";
 	public static String SCObjets_AddListSnippet ="";
 	public static String SCThreads_snippet = "";
+	public static String Adding_SCThreads_snippet = "";
 	public static String Listener_snippet = "";
 	public static String KeyPress_snippet = "";
 	public static int clevel = 0;
