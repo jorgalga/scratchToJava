@@ -50,7 +50,7 @@ public class SCparser1 {
 	public static void main(String[] args) {
 		
 		
-        ////System.out.println(args[0]);
+        //System.out.println(args[0]);
         
 		
         parseFile(args[0]);
@@ -87,9 +87,9 @@ public class SCparser1 {
     
 	public static String evalExpression(Object dataux,  int numObject){
 		
-		////System.out.println(dataux.getClass());
+		//System.out.println(dataux.getClass());
 		if(dataux instanceof Integer  || dataux instanceof Double || dataux instanceof Long){
-			////System.out.println("el: "+dataux.toString());
+			//System.out.println("el: "+dataux.toString());
 			return dataux.toString();
 		}
 		else if(dataux instanceof String){
@@ -97,9 +97,9 @@ public class SCparser1 {
 		}else
 		{
 			
-			////System.out.println(new String("test").length());
+			//System.out.println(new String("test").length());
 			JSONArray dataux2 = (JSONArray) dataux;
-			////System.out.println("el: "+dataux2.get(0));
+			//System.out.println("el: "+dataux2.get(0));
 			if(dataux2.get(0).equals("randomFrom:to:")){
 				return  "("+ evalExpression(dataux2.get(1),numObject) +" + Math.random()*"+ evalExpression(dataux2.get(2),numObject)+")"; 
 			}else if(dataux2.get(0).equals("+")){
@@ -195,13 +195,14 @@ public class SCparser1 {
         //Events Snippets
     	if(ins.get(0).equals("whenKeyPressed")){
     		if(ins.get(1).equals("space")){
-    			Globals.KeyPress_snippet += "\t\tif (event.getKeyCode() == KeyEvent.VK_SPACE) {\n" ;
+    			Globals.KeyPress_snippet += "\t\tif (keycode.equals(\"Enter\") {\n" ;
     			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+"= new Thread_"+numthread+"();\n";
     			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
     		}
     		else{
-    			Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == '"+ins.get(1)+"') {\n" ;
+    			//Globals.KeyPress_snippet += "\t\tif (event.getKeyChar() == '"+ins.get(1)+"') {\n" ;
+    			Globals.KeyPress_snippet += "\t\tif ( keycode.equals('"+ins.get(1)+"')) {\n" ;
     			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+"= new Thread_"+numthread+"();\n";
     			Globals.KeyPress_snippet += "\t\t\tGlobals.scThread_"+numthread+".start();\n";
     			Globals.KeyPress_snippet += "\t\t}\n"; 
@@ -337,23 +338,23 @@ public class SCparser1 {
         }
         if(ins.get(0).equals("say:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
-        	s += duplicateString("\t", Globals.clevel + 2)+"////System.out.println(\"I say: "+ins.get(1)+" and I go to sleep\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//System.out.println(\"I say: "+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         if(ins.get(0).equals("say:")){
-        	s += duplicateString("\t", Globals.clevel + 2)+"////System.out.println(\"I say: "+ins.get(1)+"\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//System.out.println(\"I say: "+ins.get(1)+"\");\n";
         }
         if(ins.get(0).equals("think:duration:elapsed:from:")){
         	int auxv = Integer.parseInt(evalExpression(ins.get(2),numObject-1));
-        	s += duplicateString("\t", Globals.clevel + 2)+"////System.out.println(\"I think: "+ins.get(1)+" and I go to sleep\");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//System.out.println(\"I think: "+ins.get(1)+" and I go to sleep\");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"try {\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"\tThread.sleep("+(auxv*1000)+");\n";
         	s += duplicateString("\t", Globals.clevel + 2)+"} catch (InterruptedException e) {e.printStackTrace();}\n";
         }
         if(ins.get(0).equals("think:")){
-        	s += duplicateString("\t", Globals.clevel + 2)+"////System.out.println(\"I think: "+ins.get(1)+" \");\n";
+        	s += duplicateString("\t", Globals.clevel + 2)+"//System.out.println(\"I think: "+ins.get(1)+" \");\n";
         }
         if(ins.get(0).equals("show")){
         	s += duplicateString("\t", Globals.clevel + 2)+"Globals.listSCObjects.get("+(numObject-1)+").setVisible();\n";
@@ -471,14 +472,14 @@ public class SCparser1 {
         	s= "\t\t//Do-forever instruction\n";
         	s+= "\t\tfor(int i=0; i < Globals.steps; i++){\n";
         	s+= "\t\t\tif(Globals.infloop == true){i--;}//i does not increment\n";
-        	s+= "\t\t\telse{//System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
+        	s+= "\t\t\telse{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
         	*/
         	s+=duplicateString("\t", Globals.clevel + 2)+"//Do-forever instruction\n";
         	s+=duplicateString("\t", Globals.clevel + 2)+"for(int i=0; i < Globals.steps; i++){\n";
         	Globals.clevel++;
         	if(Globals.clevel <= 1){
         		s+=duplicateString("\t", Globals.clevel + 2)+"if(Globals.infloop == true){i--;}//i does not increment\n";
-        		s+=duplicateString("\t", Globals.clevel + 2)+"else{////System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
+        		s+=duplicateString("\t", Globals.clevel + 2)+"else{System.out.println(\"[Thread"+numthread+"] - Step:\"+i);}\n";
         	}else{
         		s+=duplicateString("\t", Globals.clevel + 2)+"i--;//i never increments \n";
         	}
@@ -521,7 +522,7 @@ public class SCparser1 {
         	Globals.clevel++;
         	
         	s+=duplicateString("\t", Globals.clevel + 2)+"i--;//i never increments \n";
-        	////System.out.println(ins.get(2));
+        	//System.out.println(ins.get(2));
         	if(ins.get(2) != null){	
         	JSONArray bloqIns = (JSONArray) ins.get(2);
 	        	for(int i=0; i < bloqIns.size() ; i++ ){
@@ -536,7 +537,7 @@ public class SCparser1 {
         	s+=duplicateString("\t", Globals.clevel + 2)+"}\n";
         }
         if(ins.get(0).equals("doIf")){
-        	////System.out.println(ins.get(2));
+        	//System.out.println(ins.get(2));
         	
 	        	String operator="";
 	        	JSONArray iaux = (JSONArray) ins.get(1);
@@ -547,7 +548,7 @@ public class SCparser1 {
 	        	}else if(iaux.get(0).equals(">")){
 	        		operator = ">";
 	        	}else {operator ="sensor";}
-	        	////System.out.println("Operator "+operator);
+	        	//System.out.println("Operator "+operator);
 	        	
 	        	s += duplicateString("\t", Globals.clevel + 2)+"//Do-if instruction\n";
 	        	if(operator.equals("sensor")){
@@ -620,7 +621,7 @@ public class SCparser1 {
     	File directory = new File(workingDir+"/scratch/");
     	//make sure directory exists
     	if(!directory.exists()){
-    		////System.out.println("No existe");
+    		//System.out.println("No existe");
     	}
     	else{
     		 try{
@@ -642,7 +643,7 @@ public class SCparser1 {
         		if(file.list().length==0){
         			
         		   file.delete();
-        		   ////System.out.println("Directory is deleted : " + file.getAbsolutePath());
+        		   //System.out.println("Directory is deleted : " + file.getAbsolutePath());
         			
         		}else{
         			
@@ -660,7 +661,7 @@ public class SCparser1 {
             	   //check the directory again, if empty then delete it
             	   if(file.list().length==0){
                	     file.delete();
-            	     ////System.out.println("Directory is deleted : "+ file.getAbsolutePath());
+            	     //System.out.println("Directory is deleted : "+ file.getAbsolutePath());
             	   }
         		}
         		
@@ -674,7 +675,7 @@ public class SCparser1 {
         
     	String workingDir = System.getProperty("user.dir");
     	//System.out.println(workingDir);
-  	    ////System.out.println("Current working directory : " + workingDir);
+  	    //System.out.println("Current working directory : " + workingDir);
     	
     	try {
 			ZipFile zipFile = new ZipFile(workingDir+"/"+ scf);
@@ -727,7 +728,8 @@ public class SCparser1 {
         
         //Writing The header lines
         String imports = "//Scratch parsed in Java \n";
-        imports += "package cucumber.features;\n"
+        //imports += "package cucumber.features;\n"
+        imports	+= "package skeleton;\n"
         		+ "import java.awt.event.ActionEvent;\n"
         		+ "import java.awt.event.ActionListener;\n"
         		+ "import java.awt.event.KeyAdapter;\n"
@@ -805,7 +807,7 @@ public class SCparser1 {
                 //System.out.println(jsonScripts.size());
                 // Foreach Script
                 for(int i = 0 ; i < jsonScripts.size() ; i++){  
-                    ////System.out.println("--[NEW Thread of the child]");
+                    //System.out.println("--[NEW Thread of the child]");
                     Globals.total_numthreads++;
                     Globals.SCThreads_snippet += "\tpublic static Thread_"+Globals.total_numthreads+" scThread_"+Globals.total_numthreads+";\n";
                     
@@ -825,7 +827,7 @@ public class SCparser1 {
                     JSONArray ins;
                     for(int j=0 ; j< jsonInstructions.size() ; j++ ){
                         ins =  (JSONArray) jsonInstructions.get(j);
-                        ////System.out.println("----"+ins.get(0));
+                        //System.out.println("----"+ins.get(0));
                         try{
                             file = new File("SCprogram.java");
                             fw = new FileWriter(file.getAbsoluteFile(), true);
@@ -863,7 +865,7 @@ public class SCparser1 {
                    	String formatFile = "";
                 	StringTokenizer st2 = new StringTokenizer((String) jsonCos.get("baseLayerMD5"), ".");
                 	while (st2.hasMoreElements()) { formatFile = (String) st2.nextElement(); }
-                	////System.out.println(formatFile);
+                	//System.out.println(formatFile);
                 	if(formatFile.equals("svg")){
                 		File fXmlFile = new File( workingDir + "/scratch/"+jsonCos.get("baseLayerID") + ".svg");
                     	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -1004,7 +1006,9 @@ public class SCparser1 {
             bw.write("\tpublic static int volume = 100;\n");
             bw.write(Globals.Globals_snippet);
             bw.write("\tpublic static int tempo = 60;\n");
+            bw.write("\tpublic static int auxint = 60;\n");
             bw.write("\tpublic static boolean infloop = true ;\n");
+            bw.write("\tpublic static boolean keysent = false;\n");
             bw.write("\tpublic static boolean cucumberKey = true;\n");
             bw.write("\tpublic static boolean cucumberKey_msg = true;\n");
             bw.write("\tpublic static boolean loop = true;\n");
@@ -1041,10 +1045,11 @@ public class SCparser1 {
             bw.write("\t\treturn res;\n");
             bw.write("\t}\n");
             
-            bw.write("\tpublic static void pulseKey(int keycode){\n");
-            bw.write("\t\t//Green Flag or Enter\n");
-            bw.write("\t\tif (keycode == 17) {\n");
-        	bw.write(Globals.Listener_snippet);		
+            bw.write("\tpublic static void pulseKey(String keycode){\n");
+            
+            bw.write("\t\tif (keycode.equals(\"ENTER\")) {\n");
+        	bw.write(Globals.Listener_snippet);	
+        	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
             bw.write("\t\t}\n");
             bw.write("\t}\n");
             
@@ -1059,7 +1064,9 @@ public class SCparser1 {
         	file = new File("SCprogram.java");
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
-            /*
+            
+            bw.write("/*\n");
+            
             bw.write("class MKeyListener extends KeyAdapter {\n");
         	bw.write("\t@Override public void keyPressed(KeyEvent event) {\n");
         	bw.write("\t\tchar ch = event.getKeyChar();\n");
@@ -1067,20 +1074,22 @@ public class SCparser1 {
         	bw.write("\t\t\tGlobals.loop = false;\n");
         	bw.write("\t\t}\n");
         	bw.write("\t\tif (event.getKeyCode() == KeyEvent.VK_ENTER) {\n");
-        	*/
+        	
         	//The starting of the Threads is now controlled by the cucumber Step Definitions
         	//By default the construction is done by cucumber
-            /*
+            
         	bw.write(Globals.Listener_snippet);
         	bw.write("\t\t\tGlobals.cucumberKey = false;\n");
         	bw.write("\t\t}\n");
-        	*/
+        	
         	//Adding KeypressEvents
-            /*
+            
         	bw.write(Globals.KeyPress_snippet);
         	bw.write("\t}\n");
         	bw.write("}\n");
-        	*/
+        	
+        	bw.write("*/\n");
+        	
             bw.close(); 
         }catch (IOException e){}
         //Writing the App main snippet
@@ -1092,15 +1101,15 @@ public class SCparser1 {
             bw.write("class App extends Thread{\n");
             bw.write("\tpublic void run (){\n");
             //Writing Key Listener declaration
-            /*
+            
             bw.write("\t\t// Key Listener declaration\n");
-            bw.write("\t\tJTextField textField = new JTextField();\n");
-            bw.write("\t\ttextField.addKeyListener(new MKeyListener());\n");
-            bw.write("\t\tJFrame jframe = new JFrame();\n");
-            bw.write("\t\tjframe.add(textField);\n");
-            bw.write("\t\tjframe.setSize(800, 800);\n");
-            bw.write("\t\tjframe.setVisible(true);\n");
-            */
+            bw.write("\t\t//JTextField textField = new JTextField();\n");
+            bw.write("\t\t//textField.addKeyListener(new MKeyListener());\n");
+            bw.write("\t\t//JFrame jframe = new JFrame();\n");
+            bw.write("\t\t//jframe.add(textField);\n");
+            bw.write("\t\t//jframe.setSize(800, 800);\n");
+            bw.write("\t\t//jframe.setVisible(true);\n");
+            
             //Filling the ArrayListwith the SCobjects
             bw.write("\t\t//Filling the ArrayListwith the SCobjects\n");
             bw.write(Globals.SCObjets_AddListSnippet);
@@ -1108,6 +1117,9 @@ public class SCparser1 {
             bw.write("\t\tGlobals.cucumberKey = false;\n");
             bw.write("\t\tGlobals.appLaunched = true;\n");
             if(Globals.msgSending){bw.write("\t\tGlobals.initiater.addListener(Globals.responder);\n");}
+            
+           
+            
             bw.write("\t}\n");//Close run function
             bw.write("}\n");//Close App class
             
